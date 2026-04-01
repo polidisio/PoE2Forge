@@ -1,0 +1,69 @@
+[
+  // ===== STRENGTH TREE (Left Side) =====
+  {"id": "str_start", "name": "Strength", "type": "start", "stats": {"strength": 10}, "position": {"x": 0, "y": 200}, "connections": ["str_1", "str_2"], "tier": 0},
+  {"id": "str_1", "name": "+10 Strength", "type": "minor", "stats": {"strength": 10}, "position": {"x": 80, "y": 160}, "connections": ["str_start", "str_3", "melee_1"], "tier": 1},
+  {"id": "str_2", "name": "+10 Strength", "type": "minor", "stats": {"strength": 10}, "position": {"x": 80, "y": 240}, "connections": ["str_start", "str_4", "armor_1"], "tier": 1},
+  {"id": "str_3", "name": "+15 Strength", "type": "minor", "stats": {"strength": 15}, "position": {"x": 160, "y": 120}, "connections": ["str_1", "melee_2"], "tier": 2},
+  {"id": "str_4", "name": "+15 Strength", "type": "minor", "stats": {"strength": 15}, "position": {"x": 160, "y": 280}, "connections": ["str_2", "armor_2"], "tier": 2},
+  {"id": "melee_1", "name": "Melee Damage", "type": "notable", "stats": {"meleeDamage": 25}, "position": {"x": 160, "y": 180}, "connections": ["str_1", "melee_3", "str_3"], "tier": 2},
+  {"id": "melee_2", "name": "+20% Melee Damage", "type": "notable", "stats": {"meleeDamage": 20, "percent": true}, "position": {"x": 240, "y": 100}, "connections": ["str_3", "melee_keystone"], "tier": 3},
+  {"id": "melee_3", "name": "Life Gain on Hit", "type": "notable", "stats": {"lifeOnHit": 5}, "position": {"x": 240, "y": 200}, "connections": ["melee_1", "melee_2", "str_5"], "tier": 3},
+  {"id": "str_5", "name": "+20 Strength", "type": "minor", "stats": {"strength": 20}, "position": {"x": 320, "y": 240}, "connections": ["melee_3", "armor_2", "ironwood"], "tier": 4},
+  {"id": "melee_keystone", "name": "Overpower", "type": "keystone", "stats": {"overpowerDamage": 40}, "position": {"x": 360, "y": 80}, "connections": ["melee_2"], "tier": 4},
+
+  // ===== DEXTERITY TREE (Right Side) =====
+  {"id": "dex_start", "name": "Dexterity", "type": "start", "stats": {"dexterity": 10}, "position": {"x": 0, "y": 400}, "connections": ["dex_1", "dex_2"], "tier": 0},
+  {"id": "dex_1", "name": "+10 Dexterity", "type": "minor", "stats": {"dexterity": 10}, "position": {"x": 80, "y": 360}, "connections": ["dex_start", "dex_3", "evasion_1"], "tier": 1},
+  {"id": "dex_2", "name": "+10 Dexterity", "type": "minor", "stats": {"dexterity": 10}, "position": {"x": 80, "y": 440}, "connections": ["dex_start", "dex_4", "projectile_1"], "tier": 1},
+  {"id": "dex_3", "name": "+15 Dexterity", "type": "minor", "stats": {"dexterity": 15}, "position": {"x": 160, "y": 320}, "connections": ["dex_1", "evasion_2"], "tier": 2},
+  {"id": "dex_4", "name": "+15 Dexterity", "type": "minor", "stats": {"dexterity": 15}, "position": {"x": 160, "y": 480}, "connections": ["dex_2", "projectile_2"], "tier": 2},
+  {"id": "evasion_1", "name": "Evasion", "type": "notable", "stats": {"evasion": 80}, "position": {"x": 160, "y": 380}, "connections": ["dex_1", "evasion_3", "dex_3"], "tier": 2},
+  {"id": "projectile_1", "name": "Projectile Damage", "type": "notable", "stats": {"projectileDamage": 20}, "position": {"x": 160, "y": 420}, "connections": ["dex_2", "projectile_2", "dex_4"], "tier": 2},
+  {"id": "evasion_2", "name": "+30% Evasion", "type": "notable", "stats": {"evasion": 30, "percent": true}, "position": {"x": 240, "y": 300}, "connections": ["dex_3", "evasion_keystone"], "tier": 3},
+  {"id": "projectile_2", "name": "Projectile Speed", "type": "notable", "stats": {"projectileSpeed": 25}, "position": {"x": 240, "y": 500}, "connections": ["dex_4", "chain_1"], "tier": 3},
+  {"id": "evasion_3", "name": "Dodge Chance", "type": "notable", "stats": {"dodgeChance": 10}, "position": {"x": 240, "y": 380}, "connections": ["evasion_1", "evasion_2", "dex_5"], "tier": 3},
+  {"id": "dex_5", "name": "+20 Dexterity", "type": "minor", "stats": {"dexterity": 20}, "position": {"x": 320, "y": 400}, "connections": ["evasion_3", "projectile_2", "arrowmaker"], "tier": 4},
+  {"id": "evasion_keystone", "name": "Acrobatics", "type": "keystone", "stats": {"dodgeChance": 30, "spellDodgeChance": 15}, "position": {"x": 360, "y": 280}, "connections": ["evasion_2"], "tier": 4},
+  {"id": "chain_1", "name": "Chain", "type": "notable", "stats": {"chainCount": 2}, "position": {"x": 320, "y": 520}, "connections": ["projectile_2", "chain_keystone"], "tier": 4},
+  {"id": "chain_keystone", "name": "Far Shot", "type": "keystone", "stats": {"projectileDamage": 50, "range": -30}, "position": {"x": 400, "y": 520}, "connections": ["chain_1"], "tier": 5},
+
+  // ===== INTELLIGENCE TREE (Bottom) =====
+  {"id": "int_start", "name": "Intelligence", "type": "start", "stats": {"intelligence": 10}, "position": {"x": 200, "y": 600}, "connections": ["int_1", "int_2"], "tier": 0},
+  {"id": "int_1", "name": "+10 Intelligence", "type": "minor", "stats": {"intelligence": 10}, "position": {"x": 120, "y": 660}, "connections": ["int_start", "int_3", "spell_1"], "tier": 1},
+  {"id": "int_2", "name": "+10 Intelligence", "type": "minor", "stats": {"intelligence": 10}, "position": {"x": 280, "y": 660}, "connections": ["int_start", "int_4", "elemental_1"], "tier": 1},
+  {"id": "int_3", "name": "+15 Intelligence", "type": "minor", "stats": {"intelligence": 15}, "position": {"x": 60, "y": 720}, "connections": ["int_1", "spell_2"], "tier": 2},
+  {"id": "int_4", "name": "+15 Intelligence", "type": "minor", "stats": {"intelligence": 15}, "position": {"x": 340, "y": 720}, "connections": ["int_2", "elemental_2"], "tier": 2},
+  {"id": "spell_1", "name": "Spell Damage", "type": "notable", "stats": {"spellDamage": 25}, "position": {"x": 120, "y": 720}, "connections": ["int_1", "spell_3", "int_3"], "tier": 2},
+  {"id": "elemental_1", "name": "Elemental Damage", "type": "notable", "stats": {"elementalDamage": 20}, "position": {"x": 280, "y": 720}, "connections": ["int_2", "elemental_3", "int_4"], "tier": 2},
+  {"id": "spell_2", "name": "+30% Spell Damage", "type": "notable", "stats": {"spellDamage": 30, "percent": true}, "position": {"x": 40, "y": 800}, "connections": ["int_3", "spell_keystone"], "tier": 3},
+  {"id": "spell_3", "name": "Cast Speed", "type": "notable", "stats": {"castSpeed": 20}, "position": {"x": 140, "y": 800}, "connections": ["spell_1", "spell_keystone", "mana_1"], "tier": 3},
+  {"id": "elemental_2", "name": "+30% Elemental Damage", "type": "notable", "stats": {"elementalDamage": 30, "percent": true}, "position": {"x": 360, "y": 800}, "connections": ["elemental_1", "elemental_keystone"], "tier": 3},
+  {"id": "elemental_3", "name": "Elemental Penetration", "type": "notable", "stats": {"elementalPenetration": 10}, "position": {"x": 280, "y": 800}, "connections": ["elemental_1", "elemental_keystone", "mana_1"], "tier": 3},
+  {"id": "mana_1", "name": "+50 Maximum Mana", "type": "minor", "stats": {"maxMana": 50}, "position": {"x": 200, "y": 860}, "connections": ["spell_3", "elemental_3", "mana_2"], "tier": 4},
+  {"id": "mana_2", "name": "+100 Maximum Mana", "type": "notable", "stats": {"maxMana": 100}, "position": {"x": 200, "y": 920}, "connections": ["mana_1", "mana_keystone"], "tier": 5},
+  {"id": "spell_keystone", "name": "Archmage", "type": "keystone", "stats": {"spellDamage": 40, "manaCost": 40}, "position": {"x": 80, "y": 880}, "connections": ["spell_2", "spell_3"], "tier": 4},
+  {"id": "elemental_keystone", "name": "Elemental Overload", "type": "keystone", "stats": {"critMultiplier": 100, "nonCritDamage": -30}, "position": {"x": 340, "y": 880}, "connections": ["elemental_2", "elemental_3"], "tier": 4},
+  {"id": "mana_keystone", "name": "Mind Over Matter", "type": "keystone", "stats": {"manaAbsorb": 30}, "position": {"x": 200, "y": 980}, "connections": ["mana_2"], "tier": 5},
+
+  // ===== MINION TREE (Top Right) =====
+  {"id": "minion_start", "name": "Minion Instability", "type": "start", "stats": {"minionDamage": 10}, "position": {"x": 500, "y": 100}, "connections": ["minion_1", "minion_2"], "tier": 0},
+  {"id": "minion_1", "name": "+10% Minion Damage", "type": "minor", "stats": {"minionDamage": 10, "percent": true}, "position": {"x": 580, "y": 60}, "connections": ["minion_start", "minion_3"], "tier": 1},
+  {"id": "minion_2", "name": "+10% Minion Life", "type": "minor", "stats": {"minionLife": 10}, "position": {"x": 580, "y": 140}, "connections": ["minion_start", "minion_4"], "tier": 1},
+  {"id": "minion_3", "name": "+20% Minion Damage", "type": "notable", "stats": {"minionDamage": 20, "percent": true}, "position": {"x": 660, "y": 40}, "connections": ["minion_1", "minion_5"], "tier": 2},
+  {"id": "minion_4", "name": "+20% Minion Life", "type": "notable", "stats": {"minionLife": 20}, "position": {"x": 660, "y": 160}, "connections": ["minion_2", "minion_6"], "tier": 2},
+  {"id": "minion_5", "name": "Feeding", "type": "notable", "stats": {"minionLife": 30, "lifeLeech": 5}, "position": {"x": 740, "y": 60}, "connections": ["minion_3", "minion_keystone"], "tier": 3},
+  {"id": "minion_6", "name": "Soulmaker", "type": "notable", "stats": {"minionDamage": 35, "minionAttackSpeed": 15}, "position": {"x": 740, "y": 140}, "connections": ["minion_4", "minion_keystone"], "tier": 3},
+  {"id": "minion_keystone", "name": "Hostility", "type": "keystone", "stats": {"minionTaunt": true, "minionLife": -50}, "position": {"x": 820, "y": 100}, "connections": ["minion_5", "minion_6"], "tier": 4},
+
+  // ===== ARMOR TREE (Bottom Left - Connected to STR) =====
+  {"id": "armor_1", "name": "+20 Armor", "type": "minor", "stats": {"armor": 20}, "position": {"x": 120, "y": 300}, "connections": ["str_2", "armor_3"], "tier": 2},
+  {"id": "armor_2", "name": "+30 Armor", "type": "minor", "stats": {"armor": 30}, "position": {"x": 240, "y": 300}, "connections": ["str_4", "str_5", "armor_3", "armor_4"], "tier": 3},
+  {"id": "armor_3", "name": "Armor & Block", "type": "notable", "stats": {"armor": 50, "blockChance": 5}, "position": {"x": 180, "y": 360}, "connections": ["armor_1", "armor_2", "armor_4"], "tier": 3},
+  {"id": "armor_4", "name": "Iron Skin", "type": "notable", "stats": {"armor": 80, "armorPercent": 15}, "position": {"x": 280, "y": 380}, "connections": ["armor_2", "armor_3", "ironwood"], "tier": 4},
+  {"id": "ironwood", "name": "Ironwood", "type": "keystone", "stats": {"armor": 100, "fireResist": 25}, "position": {"x": 380, "y": 340}, "connections": ["str_5", "armor_4"], "tier": 4},
+
+  // ===== PROJECTILE/BOW TREE (Far Right - Connected to DEX) =====
+  {"id": "arrowmaker", "name": "Arrow Making", "type": "notable", "stats": {"projectileDamage": 35, "projectileSpeed": 15}, "position": {"x": 420, "y": 420}, "connections": ["dex_5", "bow_1"], "tier": 4},
+  {"id": "bow_1", "name": "Bow Damage", "type": "notable", "stats": {"bowDamage": 40, "attackSpeed": 10}, "position": {"x": 500, "y": 380}, "connections": ["arrowmaker", "bow_keystone"], "tier": 5},
+  {"id": "bow_keystone", "name": "Ranger", "type": "keystone", "stats": {"movementSpeed": 30, "evasion": 50, "projectileDamage": -20}, "position": {"x": 580, "y": 380}, "connections": ["bow_1"], "tier": 5}
+]

@@ -8,6 +8,7 @@ class GameDataService: ObservableObject {
     @Published var supportGems: [SupportGem] = []
     @Published var weapons: [Weapon] = []
     @Published var armors: [Armor] = []
+    @Published var passiveSkills: [PassiveSkillNode] = []
     
     @AppStorage("builds") private var buildsData: Data = Data()
     @AppStorage("runs") private var runsData: Data = Data()
@@ -33,6 +34,7 @@ class GameDataService: ObservableObject {
         supportGems = loadJSON("weapons") ?? []
         weapons = loadJSON("supportGems") ?? []
         armors = loadJSON("armor") ?? []
+        passiveSkills = loadJSON("passiveSkills") ?? []
     }
     
     private func loadJSON<T: Decodable>(_ name: String) -> T? {
@@ -121,6 +123,70 @@ class GameDataService: ObservableObject {
     func classBy(id: String) -> CharacterClass? {
         classes.first { $0.id == id }
     }
+
+    func passiveSkillBy(id: String) -> PassiveSkillNode? {
+        passiveSkills.first { $0.id == id }
+    }
+
+    // MARK: - Passive Tree Helpers
+    func passiveNodeIsAllocated(_ nodeId: String, in build: Build) -> Bool {
+        build.passiveTree.isAllocated(nodeId)
+    }
+
+    func passiveNodeCanAllocate(_ nodeId: String, in build: Build) -> Bool {
+        guard let node = passiveSkillBy(id: nodeId) else { return false }
+
+        // Already allocated
+        if build.passiveTree.isAllocated(nodeId) { return true }
+
+        // Start nodes can always be allocated
+        if node.type == .start { return true }
+
+        // Check if connected to any allocated node
+        return build.passiveTree.isConnectedToStart(nodeId, allNodes: passiveSkills)
+    }
+
+    func calculatePassiveBonus(for build: Build) -> PassiveBonus {
+        var bonus = PassiveBonus()
+
+        for nodeId in build.passiveTree.allocatedNodes {
+            guard let node = passiveSkillBy(id: nodeId) else { continue }
+
+            // Skip percent-only stats (stored as helper values)
+            if node.stats["percent"] == 1 { continue }
+
+            let stats = node.stats
+            if let val = stats["strength"] { bonus.strength += val }
+            if let val = stats["dexterity"] { bonus.dexterity += val }
+            if let val = stats["intelligence"] { bonus.intelligence += val }
+            if let val = stats["meleeDamage"] { bonus.meleeDamage += val }
+            if let val = stats["projectileDamage"] { bonus.projectileDamage += val }
+            if let val = stats["spellDamage"] { bonus.spellDamage += val }
+            if let val = stats["elementalDamage"] { bonus.elementalDamage += val }
+            if let val = stats["armor"] { bonus.armor += val }
+            if let val = stats["evasion"] { bonus.evasion += val }
+            if let val = stats["minionDamage"] { bonus.minionDamage += val }
+            if let val = stats["minionLife"] { bonus.minionLife += val }
+            if let val = stats["maxMana"] { bonus.maxMana += val }
+            if let val = stats["castSpeed"] { bonus.castSpeed += val }
+            if let val = stats["attackSpeed"] { bonus.attackSpeed += val }
+            if let val = stats["lifeOnHit"] { bonus.lifeOnHit += val }
+            if let val = stats["dodgeChance"] { bonus.dodgeChance += val }
+            if let val = stats["chainCount"] { bonus.chainCount += val }
+            if let val = stats["projectileSpeed"] { bonus.projectileSpeed += val }
+            if let val = stats["critMultiplier"] { bonus.critMultiplier += val }
+            if let val = stats["elementalPenetration"] { bonus.elementalPenetration += val }
+            if let val = stats["bowDamage"] { bonus.bowDamage += val }
+            if let val = stats["movementSpeed"] { bonus.movementSpeed += val }
+            if let val = stats["overpowerDamage"] { bonus.overpowerDamage += val }
+            if let val = stats["fireResist"] { bonus.fireResist += val }
+            if let val = stats["coldResist"] { bonus.coldResist += val }
+            if let val = stats["lightningResist"] { bonus.lightningResist += val }
+            if let val = stats["chaosResist"] { bonus.chaosResist += val }
+        }
+
+        return bonus
+    }
     
     var completionRate: Double {
         guard !runs.isEmpty else { return 0 }
@@ -161,6 +227,7 @@ class GameDataService: ObservableObject {
             stats = CharacterStats(baseStats: Stats(strength: 10, dexterity: 10, intelligence: 10), level: build.characterLevel)
         }
 
+        // Add bonuses from equipped items
         for equipped in build.equippedItems {
             if equipped.isWeapon {
                 if let weapon = weaponBy(id: equipped.itemId) {
@@ -174,6 +241,12 @@ class GameDataService: ObservableObject {
                 }
             }
         }
+
+        // Add bonuses from passive tree
+        let passiveBonus = calculatePassiveBonus(for: build)
+        stats.additionalStrength += passiveBonus.strength
+        stats.additionalDexterity += passiveBonus.dexterity
+        stats.additionalIntelligence += passiveBonus.intelligence
 
         return stats
     }

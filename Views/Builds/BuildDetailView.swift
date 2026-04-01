@@ -7,6 +7,7 @@ struct BuildDetailView: View {
 
     @State private var showingEditor = false
     @State private var showingGearPicker = false
+    @State private var showingPassiveTree = false
     @State private var selectedSlot: EquipmentSlot?
 
     var stats: CharacterStats {
@@ -15,6 +16,10 @@ struct BuildDetailView: View {
 
     var validation: EquipmentValidationResult {
         gameData.validateEquipment(for: build)
+    }
+
+    var passiveBonus: PassiveBonus {
+        gameData.calculatePassiveBonus(for: build)
     }
 
     var body: some View {
@@ -26,6 +31,26 @@ struct BuildDetailView: View {
                         .padding()
                         .background(Color(hex: "1a1a24"))
                         .cornerRadius(16)
+
+                    // Passive Tree button
+                    Button {
+                        showingPassiveTree = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "circle.hexagongrid")
+                                .foregroundColor(Color(hex: "e07020"))
+                            Text("Passive Tree")
+                                .foregroundColor(.white)
+                            Spacer()
+                            Text("\(build.passiveTree.allocatedNodes.count) pts")
+                                .foregroundColor(.gray)
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .background(Color(hex: "1a1a24"))
+                        .cornerRadius(16)
+                    }
 
                     // Stats breakdown
                     StatsBreakdownView(stats: stats)
@@ -64,6 +89,9 @@ struct BuildDetailView: View {
                 if let slot = selectedSlot {
                     SlotGearPickerView(slot: slot, currentBuild: build)
                 }
+            }
+            .sheet(isPresented: $showingPassiveTree) {
+                PassiveTreeView(build: .constant(build))
             }
         }
     }

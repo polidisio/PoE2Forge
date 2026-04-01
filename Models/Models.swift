@@ -153,6 +153,7 @@ struct Build: Codable, Identifiable {
     var forClass: String?
     var equippedItems: [EquippedItem]
     var skillIds: [String]
+    var passiveTree: PassiveTree
     var notes: String
     var createdAt: Date
     var isFavorite: Bool
@@ -164,6 +165,7 @@ struct Build: Codable, Identifiable {
         forClass: String? = nil,
         equippedItems: [EquippedItem] = [],
         skillIds: [String] = [],
+        passiveTree: PassiveTree = PassiveTree(),
         notes: String = "",
         createdAt: Date = Date(),
         isFavorite: Bool = false,
@@ -174,6 +176,7 @@ struct Build: Codable, Identifiable {
         self.forClass = forClass
         self.equippedItems = equippedItems
         self.skillIds = skillIds
+        self.passiveTree = passiveTree
         self.notes = notes
         self.createdAt = createdAt
         self.isFavorite = isFavorite

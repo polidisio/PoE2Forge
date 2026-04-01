@@ -320,4 +320,118 @@ class GameDataService: ObservableObject {
 
         return (diff, issues)
     }
+
+    // MARK: - DPS Calculation
+    func calculateBuildDPS(for build: Build) -> BuildDPSSummary {
+        var summary = BuildDPSSummary()
+
+        // Get equipped weapon
+        var mainHandWeapon: Weapon?
+        if let mainHand = build.item(in: .mainHand), mainHand.isWeapon {
+            mainHandWeapon = weaponBy(id: mainHand.itemId)
+        }
+
+        // Calculate DPS for each skill
+        for skillId in build.skillIds {
+            guard let skill = skillBy(id: skillId) else { continue }
+            let socket = build.socketFor(skillId)
+
+            let calc = calculateSkillDPS(
+                skill: skill,
+                weapon: mainHandWeapon,
+                socket: socket,
+                build: build
+            )
+
+            summary.skillCalculations.append(calc)
+
+            // Categorize DPS
+            let isAttack = skill.gemType == .attack || skill.gemType == .movement
+            let isProjectile = skill.gemType == .spell && skill.tags.contains("projectile")
+
+            if isAttack {
+                summary.totalMeleeDPS += calc.effectiveDPS
+            } else if isProjectile {
+                summary.totalProjectileDPS += calc.effectiveCastDPS
+            } else {
+                summary.totalSpellDPS += calc.effectiveCastDPS
+            }
+        }
+
+        summary.totalDPS = summary.totalMeleeDPS + summary.totalProjectileDPS + summary.totalSpellDPS
+
+        return summary
+    }
+
+    func calculateSkillDPS(skill: SkillGem, weapon: Weapon?, socket: SkillSocket, build: Build) -> DPSCalculation {
+        var calc = DPSCalculation(
+            skillId: skill.id,
+            skillName: skill.name,
+            baseDamage: 0,
+            effectiveDamage: 0,
+            damageMultiplier: 1.0,
+            attacksPerSecond: 0,
+            effectiveDPS: 0,
+            hitDamage: 0,
+            critChance: 5.0,
+            critMultiplier: 1.5,
+            castSpeed: 1.0,
+            effectiveCastDPS: 0,
+            damageType: skill.damageType,
+            isAttack: skill.gemType == .attack
+        )
+
+        // Parse base damage from skill
+        if let damageStr = skill.baseStats["Damage"] {
+            calc.baseDamage = parseDamageRange(damageStr)
+        }
+
+        // Apply support gem multipliers
+        calc.damageMultiplier = socket.damageMultiplier(gameData: self)
+
+        // For attack skills with weapon
+        if skill.gemType == .attack, let weapon = weapon {
+            if let apsStr = weapon.aps, let aps = Double(apsStr) {
+                calc.attacksPerSecond = aps
+            }
+            calc.hitDamage = calc.baseDamage * calc.damageMultiplier
+            calc.effectiveDPS = calc.hitDamage * calc.attacksPerSecond
+        } else {
+            // Spell skills
+            calc.castSpeed = 1.0  // Base cast speed
+            calc.effectiveDamage = calc.baseDamage * calc.damageMultiplier
+            calc.effectiveCastDPS = calc.effectiveDamage * calc.castSpeed
+        }
+
+        // Add passive bonuses
+        let passiveBonus = calculatePassiveBonus(for: build)
+
+        // Apply passive damage bonuses
+        if skill.gemType == .attack {
+            let damageBonus = Double(passiveBonus.meleeDamage + passiveBonus.bowDamage + passiveBonus.projectileDamage) / 100.0
+            calc.damageMultiplier *= (1.0 + damageBonus)
+            calc.hitDamage = calc.baseDamage * calc.damageMultiplier
+            calc.effectiveDPS = calc.hitDamage * calc.attacksPerSecond
+        } else {
+            let spellBonus = Double(passiveBonus.spellDamage + passiveBonus.elementalDamage) / 100.0
+            calc.damageMultiplier *= (1.0 + spellBonus)
+            calc.effectiveDamage = calc.baseDamage * calc.damageMultiplier
+            calc.effectiveCastDPS = calc.effectiveDamage * calc.castSpeed
+        }
+
+        return calc
+    }
+
+    private func parseDamageRange(_ str: String) -> Double {
+        // Parse "100-150" or just "100"
+        let parts = str.split(separator: "-")
+        if parts.count == 2,
+           let min = Double(parts[0].trimmingCharacters(in: .whitespaces)),
+           let max = Double(parts[1].trimmingCharacters(in: .whitespaces)) {
+            return (min + max) / 2.0
+        } else if let single = Double(str.trimmingCharacters(in: .whitespaces)) {
+            return single
+        }
+        return 0
+    }
 }

@@ -8,6 +8,8 @@ struct BuildDetailView: View {
     @State private var showingEditor = false
     @State private var showingGearPicker = false
     @State private var showingPassiveTree = false
+    @State private var showingSkillSocket = false
+    @State private var showingDPS = false
     @State private var selectedSlot: EquipmentSlot?
 
     var stats: CharacterStats {
@@ -20,6 +22,10 @@ struct BuildDetailView: View {
 
     var passiveBonus: PassiveBonus {
         gameData.calculatePassiveBonus(for: build)
+    }
+
+    var dpsSummary: BuildDPSSummary {
+        gameData.calculateBuildDPS(for: build)
     }
 
     var body: some View {
@@ -52,6 +58,26 @@ struct BuildDetailView: View {
                         .cornerRadius(16)
                     }
 
+                    // DPS Calculator button
+                    Button {
+                        showingDPS = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "flame.fill")
+                                .foregroundColor(.orange)
+                            Text("DPS Calculator")
+                                .foregroundColor(.white)
+                            Spacer()
+                            Text(formatNumber(dpsSummary.totalDPS))
+                                .foregroundColor(Color(hex: "e07020"))
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .background(Color(hex: "1a1a24"))
+                        .cornerRadius(16)
+                    }
+
                     // Stats breakdown
                     StatsBreakdownView(stats: stats)
 
@@ -60,8 +86,13 @@ struct BuildDetailView: View {
                         RequirementWarningsView(failures: validation.failedRequirements)
                     }
 
-                    // Skills list
-                    SkillsListView(skillIds: build.skillIds)
+                    // Skills list with socket button
+                    SkillsListView(
+                        skillIds: build.skillIds,
+                        onSocketTap: {
+                            showingSkillSocket = true
+                        }
+                    )
 
                     // Equipment slot details
                     EquipmentSlotDetailsView(build: build, onSlotTap: { slot in
@@ -93,7 +124,20 @@ struct BuildDetailView: View {
             .sheet(isPresented: $showingPassiveTree) {
                 PassiveTreeView(build: .constant(build))
             }
+            .sheet(isPresented: $showingSkillSocket) {
+                SkillSocketView(build: .constant(build))
+            }
+            .sheet(isPresented: $showingDPS) {
+                DPSView(build: build)
+            }
         }
+    }
+
+    func formatNumber(_ value: Double) -> String {
+        if value >= 1000 {
+            return String(format: "%.1fK", value / 1000)
+        }
+        return String(format: "%.0f", value)
     }
 }
 
@@ -190,6 +234,7 @@ struct RequirementWarningsView: View {
 struct SkillsListView: View {
     @EnvironmentObject var gameData: GameDataService
     let skillIds: [String]
+    var onSocketTap: (() -> Void)? = nil
 
     var skills: [SkillGem] {
         skillIds.compactMap { gameData.skillBy(id: $0) }
@@ -197,9 +242,25 @@ struct SkillsListView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("SKILLS")
-                .font(.caption)
-                .foregroundColor(.gray)
+            HStack {
+                Text("SKILLS")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                Spacer()
+                if onSocketTap != nil && !skills.isEmpty {
+                    Button {
+                        onSocketTap?()
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "link.circle")
+                                .font(.caption)
+                            Text("Socket")
+                                .font(.caption)
+                        }
+                        .foregroundColor(Color(hex: "e07020"))
+                    }
+                }
+            }
 
             if skills.isEmpty {
                 Text("No skills selected")

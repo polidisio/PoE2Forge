@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02BCF40E57552D26801BD8E1 /* DPSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2386E3D16C3B80E1E1FB1DF4 /* DPSView.swift */; };
 		0D1DC332EE378512D9058F4B /* SkillsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954F8A6484FC95E080905ABF /* SkillsView.swift */; };
 		2255D46A9892835AD2C9EB68 /* BuildEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8F2DF92130D7C8D9CC27BC /* BuildEditorView.swift */; };
 		2311B0EE32063173BC2E130A /* armor.json in Resources */ = {isa = PBXBuildFile; fileRef = BA8D5223DCE391FD728C9C8B /* armor.json */; };
@@ -14,6 +15,7 @@
 		49C2C8B67B2CC96403507E7F /* PassiveSkillModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B0C2CA695B029EB5DF63C3 /* PassiveSkillModels.swift */; };
 		5531A5AF45F3DD425286401C /* skillGems.json in Resources */ = {isa = PBXBuildFile; fileRef = F2E889F26FF955411E166C45 /* skillGems.json */; };
 		5C311C287AC8AA6BCBEE6286 /* SlotGearPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13B7E67FEC2822B6C78D9225 /* SlotGearPickerView.swift */; };
+		61A40A1FB380785A51D63D96 /* SkillSocketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 443D9C110BCD056A17523B07 /* SkillSocketView.swift */; };
 		63FE45439942EAA70A65EA32 /* GearView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0A5E5461FAECB3D6B2F8F3 /* GearView.swift */; };
 		672DE6022BA08F577F4A0A87 /* passiveSkills.json in Resources */ = {isa = PBXBuildFile; fileRef = 7E9E84023FCA7E245540804C /* passiveSkills.json */; };
 		6833BEC3AB7AD1357B5A5EC4 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AE26BD302CACD3EC1C06A58 /* MainTabView.swift */; };
@@ -22,6 +24,7 @@
 		7A8260FFCB122FD277CACB36 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DD9CA1B48B33EB5561FC4E /* Models.swift */; };
 		7D65BAC1BECD8F362532D74B /* BuildsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87AAD85EF2ABBE77F48259 /* BuildsListView.swift */; };
 		8474A021DECC58B2B045C5F7 /* PassiveTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009A22BA9B933AAB53C8526B /* PassiveTreeView.swift */; };
+		8BA0CBD2B4068EE5862327DE /* SocketModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D738FFFF2B3623B4A9E930A9 /* SocketModels.swift */; };
 		8F3C0BC7485AA43F411AC04B /* CharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E26798F3CF9D61AB86BDF5 /* CharacterView.swift */; };
 		9E908F48AF81A62963FD7E93 /* GameDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300176173634DA8DF5231FE6 /* GameDataService.swift */; };
 		C299BF0480C7AF171DBE0D0E /* classes.json in Resources */ = {isa = PBXBuildFile; fileRef = A0EE478959F22F1BF303911F /* classes.json */; };
@@ -39,12 +42,14 @@
 		13B7E67FEC2822B6C78D9225 /* SlotGearPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlotGearPickerView.swift; sourceTree = "<group>"; };
 		1543A0C37D9BDEEF1C74F948 /* EquipmentModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquipmentModels.swift; sourceTree = "<group>"; };
 		20DD9CA1B48B33EB5561FC4E /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		2386E3D16C3B80E1E1FB1DF4 /* DPSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DPSView.swift; sourceTree = "<group>"; };
 		2695158314247299A114644C /* PoE2ForgeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoE2ForgeApp.swift; sourceTree = "<group>"; };
 		2AE26BD302CACD3EC1C06A58 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		300176173634DA8DF5231FE6 /* GameDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameDataService.swift; sourceTree = "<group>"; };
 		3810C651DBC5025B3E592B2E /* BuildDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildDetailView.swift; sourceTree = "<group>"; };
 		3B87AAD85EF2ABBE77F48259 /* BuildsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildsListView.swift; sourceTree = "<group>"; };
 		40E26798F3CF9D61AB86BDF5 /* CharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterView.swift; sourceTree = "<group>"; };
+		443D9C110BCD056A17523B07 /* SkillSocketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillSocketView.swift; sourceTree = "<group>"; };
 		45D6CD6170504E42786CCB3E /* SkillDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillDetailView.swift; sourceTree = "<group>"; };
 		6C8F2DF92130D7C8D9CC27BC /* BuildEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildEditorView.swift; sourceTree = "<group>"; };
 		7E9E84023FCA7E245540804C /* passiveSkills.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = passiveSkills.json; sourceTree = "<group>"; };
@@ -55,6 +60,7 @@
 		B0E075395F7CAE9D7A527323 /* weapons.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = weapons.json; sourceTree = "<group>"; };
 		BA8D5223DCE391FD728C9C8B /* armor.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = armor.json; sourceTree = "<group>"; };
 		D654DD43C041220A77475C58 /* supportGems.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = supportGems.json; sourceTree = "<group>"; };
+		D738FFFF2B3623B4A9E930A9 /* SocketModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketModels.swift; sourceTree = "<group>"; };
 		D8FAAC339EAE30460CCF4D73 /* PoE2Forge.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PoE2Forge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2E889F26FF955411E166C45 /* skillGems.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = skillGems.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -117,7 +123,9 @@
 				6C8F2DF92130D7C8D9CC27BC /* BuildEditorView.swift */,
 				3B87AAD85EF2ABBE77F48259 /* BuildsListView.swift */,
 				40E26798F3CF9D61AB86BDF5 /* CharacterView.swift */,
+				2386E3D16C3B80E1E1FB1DF4 /* DPSView.swift */,
 				009A22BA9B933AAB53C8526B /* PassiveTreeView.swift */,
+				443D9C110BCD056A17523B07 /* SkillSocketView.swift */,
 				13B7E67FEC2822B6C78D9225 /* SlotGearPickerView.swift */,
 			);
 			path = Builds;
@@ -129,6 +137,7 @@
 				1543A0C37D9BDEEF1C74F948 /* EquipmentModels.swift */,
 				20DD9CA1B48B33EB5561FC4E /* Models.swift */,
 				09B0C2CA695B029EB5DF63C3 /* PassiveSkillModels.swift */,
+				D738FFFF2B3623B4A9E930A9 /* SocketModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -259,6 +268,7 @@
 				2255D46A9892835AD2C9EB68 /* BuildEditorView.swift in Sources */,
 				7D65BAC1BECD8F362532D74B /* BuildsListView.swift in Sources */,
 				8F3C0BC7485AA43F411AC04B /* CharacterView.swift in Sources */,
+				02BCF40E57552D26801BD8E1 /* DPSView.swift in Sources */,
 				D20E134F0C03D69CD853EC4A /* EquipmentModels.swift in Sources */,
 				9E908F48AF81A62963FD7E93 /* GameDataService.swift in Sources */,
 				63FE45439942EAA70A65EA32 /* GearView.swift in Sources */,
@@ -269,8 +279,10 @@
 				751D4B6813C2591BCC7E2CB8 /* PoE2ForgeApp.swift in Sources */,
 				4108C328833AFBACBACB81EA /* ProgressView_.swift in Sources */,
 				E51BFBCF50D2D62136D20214 /* SkillDetailView.swift in Sources */,
+				61A40A1FB380785A51D63D96 /* SkillSocketView.swift in Sources */,
 				0D1DC332EE378512D9058F4B /* SkillsView.swift in Sources */,
 				5C311C287AC8AA6BCBEE6286 /* SlotGearPickerView.swift in Sources */,
+				8BA0CBD2B4068EE5862327DE /* SocketModels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

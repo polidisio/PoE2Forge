@@ -154,6 +154,7 @@ struct Build: Codable, Identifiable {
     var equippedItems: [EquippedItem]
     var skillIds: [String]
     var passiveTree: PassiveTree
+    var skillSockets: [String: SkillSocket]  // skillId -> socket with supports
     var notes: String
     var createdAt: Date
     var isFavorite: Bool
@@ -166,6 +167,7 @@ struct Build: Codable, Identifiable {
         equippedItems: [EquippedItem] = [],
         skillIds: [String] = [],
         passiveTree: PassiveTree = PassiveTree(),
+        skillSockets: [String: SkillSocket] = [:],
         notes: String = "",
         createdAt: Date = Date(),
         isFavorite: Bool = false,
@@ -177,6 +179,7 @@ struct Build: Codable, Identifiable {
         self.equippedItems = equippedItems
         self.skillIds = skillIds
         self.passiveTree = passiveTree
+        self.skillSockets = skillSockets
         self.notes = notes
         self.createdAt = createdAt
         self.isFavorite = isFavorite
@@ -196,6 +199,16 @@ struct Build: Codable, Identifiable {
     // Helper to get all equipped armor
     var armors: [EquippedItem] {
         equippedItems.filter { !$0.isWeapon }
+    }
+
+    // Helper to get socket for a skill
+    func socketFor(_ skillId: String) -> SkillSocket {
+        skillSockets[skillId] ?? SkillSocket()
+    }
+
+    // Helper to update socket for a skill
+    mutating func updateSocket(for skillId: String, with socket: SkillSocket) {
+        skillSockets[skillId] = socket
     }
 }
 

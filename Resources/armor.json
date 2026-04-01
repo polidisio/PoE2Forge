@@ -1,0 +1,12 @@
+[
+  {"id": "a1", "name": "Leather Cap", "armorType": "helmet", "defense": "5", "requirements": {"level": 1, "strength": 4, "dexterity": null, "intelligence": null}, "rarity": "normal"},
+  {"id": "a2", "name": "Chestplate", "armorType": "bodyArmor", "defense": "30", "requirements": {"level": 3, "strength": 10, "dexterity": null, "intelligence": null}, "rarity": "normal"},
+  {"id": "a3", "name": "Silk Robe", "armorType": "bodyArmor", "defense": "8", "requirements": {"level": 2, "strength": null, "dexterity": null, "intelligence": 8}, "rarity": "normal"},
+  {"id": "a4", "name": "Iron Greaves", "armorType": "boots", "defense": "8", "requirements": {"level": 2, "strength": 8, "dexterity": null, "intelligence": null}, "rarity": "normal"},
+  {"id": "a5", "name": "Cloth Gloves", "armorType": "gloves", "defense": "4", "requirements": {"level": 1, "strength": null, "dexterity": null, "intelligence": 4}, "rarity": "normal"},
+  {"id": "a6", "name": "Iron Buckler", "armorType": "shield", "defense": "15", "requirements": {"level": 2, "strength": 8, "dexterity": null, "intelligence": null}, "rarity": "normal"},
+  {"id": "a7", "name": "Studded Belt", "armorType": "belt", "defense": "3", "requirements": {"level": 1, "strength": 4, "dexterity": null, "intelligence": null}, "rarity": "normal"},
+  {"id": "a8", "name": "Silver Ring", "armorType": "ring", "defense": "0", "requirements": {"level": 1, "strength": null, "dexterity": null, "intelligence": null}, "rarity": "normal"},
+  {"id": "a9", "name": "Tourmaline Amulet", "armorType": "amulet", "defense": "0", "requirements": {"level": 2, "strength": null, "dexterity": null, "intelligence": 6}, "rarity": "magic"},
+  {"id": "a10", "name": "Plate Armor", "armorType": "bodyArmor", "defense": "50", "requirements": {"level": 6, "strength": 16, "dexterity": null, "intelligence": null}, "rarity": "rare"}
+]

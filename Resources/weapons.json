@@ -1,0 +1,14 @@
+[
+  {"id": "w1", "name": "Rusted Sword", "weaponType": "oneHandSword", "damage": "10-15", "damageType": "physical", "aps": "1.4", "requirements": {"level": 1, "strength": 8, "dexterity": null, "intelligence": null}, "rarity": "normal"},
+  {"id": "w2", "name": "Tribal Hatchet", "weaponType": "oneHandAxe", "damage": "12-18", "damageType": "physical", "aps": "1.3", "requirements": {"level": 1, "strength": 8, "dexterity": null, "intelligence": null}, "rarity": "normal"},
+  {"id": "w3", "name": "Iron War Axe", "weaponType": "twoHandAxe", "damage": "25-40", "damageType": "physical", "aps": "0.9", "requirements": {"level": 5, "strength": 14, "dexterity": null, "intelligence": null}, "rarity": "magic"},
+  {"id": "w4", "name": "Long Bow", "weaponType": "bow", "damage": "15-25", "damageType": "physical", "aps": "1.2", "requirements": {"level": 2, "strength": null, "dexterity": 10, "intelligence": null}, "rarity": "normal"},
+  {"id": "w5", "name": "Deathgate Staff", "weaponType": "staff", "damage": "20-30", "damageType": "physical", "aps": "1.0", "requirements": {"level": 4, "strength": null, "dexterity": null, "intelligence": 12}, "rarity": "magic"},
+  {"id": "w6", "name": "Jagged Dagger", "weaponType": "dagger", "damage": "8-14", "damageType": "physical", "aps": "1.6", "requirements": {"level": 1, "strength": null, "dexterity": 8, "intelligence": null}, "rarity": "normal"},
+  {"id": "w7", "name": "Engraved Greatsword", "weaponType": "twoHandSword", "damage": "30-45", "damageType": "physical", "aps": "0.85", "requirements": {"level": 6, "strength": 16, "dexterity": null, "intelligence": null}, "rarity": "rare"},
+  {"id": "w8", "name": "Crystal Wand", "weaponType": "wand", "damage": "10-18", "damageType": "lightning", "aps": "1.2", "requirements": {"level": 3, "strength": null, "dexterity": null, "intelligence": 10}, "rarity": "magic"},
+  {"id": "w9", "name": "Siege Hammer", "weaponType": "oneHandMace", "damage": "14-22", "damageType": "physical", "aps": "1.2", "requirements": {"level": 2, "strength": 10, "dexterity": null, "intelligence": null}, "rarity": "normal"},
+  {"id": "w10", "name": "Warstaff", "weaponType": "staff", "damage": "25-35", "damageType": "physical", "aps": "1.1", "requirements": {"level": 5, "strength": 12, "dexterity": null, "intelligence": 12}, "rarity": "magic"},
+  {"id": "w11", "name": "Tiger's Claws", "weaponType": "claw", "damage": "9-16", "damageType": "physical", "aps": "1.5", "requirements": {"level": 2, "strength": null, "dexterity": 12, "intelligence": null}, "rarity": "normal"},
+  {"id": "w12", "name": "Iron Scepter", "weaponType": "scepter", "damage": "12-18", "damageType": "physical", "aps": "1.3", "requirements": {"level": 3, "strength": 8, "dexterity": null, "intelligence": 8}, "rarity": "magic"}
+]

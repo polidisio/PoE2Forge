@@ -1,0 +1,12 @@
+[
+  {"id": "added_fire", "name": "Added Fire Damage", "description": "Adds fire damage to attacks and spells", "supportedTypes": ["attack", "spell"], "tags": ["fire", "damage"], "damageMultiplier": "+20%"},
+  {"id": "spell_echo", "name": "Spell Echo", "description": "Supported spells repeat once with reduced damage", "supportedTypes": ["spell"], "tags": ["repeat"], "damageMultiplier": "+50%"},
+  {"id": "crit_strikes", "name": "Critical Strikes", "description": "Increases critical strike chance significantly", "supportedTypes": ["attack", "spell"], "tags": ["crit"], "damageMultiplier": "+50%"},
+  {"id": "chains", "name": "Chain", "description": "Projectiles chain to additional targets", "supportedTypes": ["attack", "spell"], "tags": ["chain", "projectile"], "damageMultiplier": "+1 chain"},
+  {"id": "fork", "name": "Fork", "description": "Projectiles fork into additional projectiles", "supportedTypes": ["attack", "spell"], "tags": ["fork", "projectile"], "damageMultiplier": "+1 fork"},
+  {"id": "area", "name": "Increased Area", "description": "Increases area of effect radius", "supportedTypes": ["attack", "spell", "aura"], "tags": ["area"], "damageMultiplier": "+30%"},
+  {"id": "vicious", "name": "Vicious Strikes", "description": "Increases damage with bleed and poison effects", "supportedTypes": ["attack"], "tags": ["bleed", "poison"], "damageMultiplier": "+25%"},
+  {"id": "minion_damage", "name": "Minion Damage", "description": "Increases damage of summoned minions", "supportedTypes": ["minion"], "tags": ["minion"], "damageMultiplier": "+40%"},
+  {"id": "multicast", "name": "Multicast", "description": "Spells cast additional times", "supportedTypes": ["spell"], "tags": ["multicast"], "damageMultiplier": "+30%"},
+  {"id": "duration", "name": "Increased Duration", "description": "Increases duration of spell effects", "supportedTypes": ["spell", "buff", "aura", "minion"], "tags": ["duration"], "damageMultiplier": "+40%"}
+]

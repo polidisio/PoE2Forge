@@ -1,0 +1,8 @@
+[
+  {"id": "warrior", "name": "Warrior", "baseStats": {"strength": 14, "dexterity": 8, "intelligence": 8}, "recommendedTags": ["melee", "physical"]},
+  {"id": "mercenary", "name": "Mercenary", "baseStats": {"strength": 10, "dexterity": 14, "intelligence": 8}, "recommendedTags": ["projectile", "crossbow"]},
+  {"id": "witch", "name": "Witch", "baseStats": {"strength": 6, "dexterity": 8, "intelligence": 16}, "recommendedTags": ["spell", "summoning"]},
+  {"id": "ranger", "name": "Ranger", "baseStats": {"strength": 6, "dexterity": 16, "intelligence": 8}, "recommendedTags": ["bow", "evasion"]},
+  {"id": "monk", "name": "Monk", "baseStats": {"strength": 10, "dexterity": 12, "intelligence": 10}, "recommendedTags": ["melee", "unarmed"]},
+  {"id": "sorceress", "name": "Sorceress", "baseStats": {"strength": 6, "dexterity": 6, "intelligence": 18}, "recommendedTags": ["spell", "elemental"]}
+]

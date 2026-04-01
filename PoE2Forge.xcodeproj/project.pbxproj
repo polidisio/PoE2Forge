@@ -1,0 +1,453 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0D1DC332EE378512D9058F4B /* SkillsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954F8A6484FC95E080905ABF /* SkillsView.swift */; };
+		2255D46A9892835AD2C9EB68 /* BuildEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8F2DF92130D7C8D9CC27BC /* BuildEditorView.swift */; };
+		2311B0EE32063173BC2E130A /* armor.json in Resources */ = {isa = PBXBuildFile; fileRef = BA8D5223DCE391FD728C9C8B /* armor.json */; };
+		4108C328833AFBACBACB81EA /* ProgressView_.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0964F281779EE63A34FE4108 /* ProgressView_.swift */; };
+		5531A5AF45F3DD425286401C /* skillGems.json in Resources */ = {isa = PBXBuildFile; fileRef = F2E889F26FF955411E166C45 /* skillGems.json */; };
+		63FE45439942EAA70A65EA32 /* GearView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0A5E5461FAECB3D6B2F8F3 /* GearView.swift */; };
+		6833BEC3AB7AD1357B5A5EC4 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AE26BD302CACD3EC1C06A58 /* MainTabView.swift */; };
+		6BC56133B9DA224AC4254BA7 /* weapons.json in Resources */ = {isa = PBXBuildFile; fileRef = B0E075395F7CAE9D7A527323 /* weapons.json */; };
+		751D4B6813C2591BCC7E2CB8 /* PoE2ForgeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2695158314247299A114644C /* PoE2ForgeApp.swift */; };
+		7A8260FFCB122FD277CACB36 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DD9CA1B48B33EB5561FC4E /* Models.swift */; };
+		7D65BAC1BECD8F362532D74B /* BuildsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87AAD85EF2ABBE77F48259 /* BuildsListView.swift */; };
+		9E908F48AF81A62963FD7E93 /* GameDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300176173634DA8DF5231FE6 /* GameDataService.swift */; };
+		C299BF0480C7AF171DBE0D0E /* classes.json in Resources */ = {isa = PBXBuildFile; fileRef = A0EE478959F22F1BF303911F /* classes.json */; };
+		E0FAA00235764A71742BCD88 /* supportGems.json in Resources */ = {isa = PBXBuildFile; fileRef = D654DD43C041220A77475C58 /* supportGems.json */; };
+		E51BFBCF50D2D62136D20214 /* SkillDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D6CD6170504E42786CCB3E /* SkillDetailView.swift */; };
+		E88FD67324240728F55ECDF0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8486EF46C43E7673D5136EE9 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0964F281779EE63A34FE4108 /* ProgressView_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView_.swift; sourceTree = "<group>"; };
+		20DD9CA1B48B33EB5561FC4E /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		2695158314247299A114644C /* PoE2ForgeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoE2ForgeApp.swift; sourceTree = "<group>"; };
+		2AE26BD302CACD3EC1C06A58 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		300176173634DA8DF5231FE6 /* GameDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameDataService.swift; sourceTree = "<group>"; };
+		3B87AAD85EF2ABBE77F48259 /* BuildsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildsListView.swift; sourceTree = "<group>"; };
+		45D6CD6170504E42786CCB3E /* SkillDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillDetailView.swift; sourceTree = "<group>"; };
+		6C8F2DF92130D7C8D9CC27BC /* BuildEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildEditorView.swift; sourceTree = "<group>"; };
+		8486EF46C43E7673D5136EE9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8E0A5E5461FAECB3D6B2F8F3 /* GearView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GearView.swift; sourceTree = "<group>"; };
+		954F8A6484FC95E080905ABF /* SkillsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillsView.swift; sourceTree = "<group>"; };
+		A0EE478959F22F1BF303911F /* classes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = classes.json; sourceTree = "<group>"; };
+		B0E075395F7CAE9D7A527323 /* weapons.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = weapons.json; sourceTree = "<group>"; };
+		BA8D5223DCE391FD728C9C8B /* armor.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = armor.json; sourceTree = "<group>"; };
+		D654DD43C041220A77475C58 /* supportGems.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = supportGems.json; sourceTree = "<group>"; };
+		D8FAAC339EAE30460CCF4D73 /* PoE2Forge.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PoE2Forge.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2E889F26FF955411E166C45 /* skillGems.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = skillGems.json; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		1F8160BBF9383EC6D8A58A37 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		2355F2079FA17460E6946AE2 = {
+			isa = PBXGroup;
+			children = (
+				D24FDB8F27BCD9E7F1CC095D /* App */,
+				83E4508EDED532F737FDA322 /* Models */,
+				4817EF63AF57BE4231223849 /* Resources */,
+				85FF38E885FCEC859A3B9914 /* Services */,
+				F2AB72632E316C82B53BB678 /* Views */,
+				485554D13EB4A1B98CC9C3D2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4817EF63AF57BE4231223849 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BA8D5223DCE391FD728C9C8B /* armor.json */,
+				8486EF46C43E7673D5136EE9 /* Assets.xcassets */,
+				A0EE478959F22F1BF303911F /* classes.json */,
+				F2E889F26FF955411E166C45 /* skillGems.json */,
+				D654DD43C041220A77475C58 /* supportGems.json */,
+				B0E075395F7CAE9D7A527323 /* weapons.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		485554D13EB4A1B98CC9C3D2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D8FAAC339EAE30460CCF4D73 /* PoE2Forge.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		64A6D9EC91F8F7E98F9AEF44 /* Skills */ = {
+			isa = PBXGroup;
+			children = (
+				45D6CD6170504E42786CCB3E /* SkillDetailView.swift */,
+				954F8A6484FC95E080905ABF /* SkillsView.swift */,
+			);
+			path = Skills;
+			sourceTree = "<group>";
+		};
+		7BBE9269D5C54051C3F10481 /* Builds */ = {
+			isa = PBXGroup;
+			children = (
+				6C8F2DF92130D7C8D9CC27BC /* BuildEditorView.swift */,
+				3B87AAD85EF2ABBE77F48259 /* BuildsListView.swift */,
+			);
+			path = Builds;
+			sourceTree = "<group>";
+		};
+		83E4508EDED532F737FDA322 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				20DD9CA1B48B33EB5561FC4E /* Models.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		85FF38E885FCEC859A3B9914 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				300176173634DA8DF5231FE6 /* GameDataService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		9D3C50CBA95622DCA124F4B7 /* Gear */ = {
+			isa = PBXGroup;
+			children = (
+				8E0A5E5461FAECB3D6B2F8F3 /* GearView.swift */,
+			);
+			path = Gear;
+			sourceTree = "<group>";
+		};
+		D24FDB8F27BCD9E7F1CC095D /* App */ = {
+			isa = PBXGroup;
+			children = (
+				2695158314247299A114644C /* PoE2ForgeApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		F2AB72632E316C82B53BB678 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2AE26BD302CACD3EC1C06A58 /* MainTabView.swift */,
+				7BBE9269D5C54051C3F10481 /* Builds */,
+				1F8160BBF9383EC6D8A58A37 /* Components */,
+				9D3C50CBA95622DCA124F4B7 /* Gear */,
+				FFD6919C8275FBBB03887A0C /* Progress */,
+				64A6D9EC91F8F7E98F9AEF44 /* Skills */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FFD6919C8275FBBB03887A0C /* Progress */ = {
+			isa = PBXGroup;
+			children = (
+				0964F281779EE63A34FE4108 /* ProgressView_.swift */,
+			);
+			path = Progress;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		90725BBCC0FC1DFCF92980C5 /* PoE2Forge */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6A1C62E5B2D250368745FD51 /* Build configuration list for PBXNativeTarget "PoE2Forge" */;
+			buildPhases = (
+				334B11B2CE3B23180C0F0425 /* Sources */,
+				69B36D9BB3BEC4A79E398D60 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PoE2Forge;
+			packageProductDependencies = (
+			);
+			productName = PoE2Forge;
+			productReference = D8FAAC339EAE30460CCF4D73 /* PoE2Forge.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		52CE4D7AE9EF6E3A6CF79FBA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					90725BBCC0FC1DFCF92980C5 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = FC0166FE8AF8B8338EF1B7DD /* Build configuration list for PBXProject "PoE2Forge" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 2355F2079FA17460E6946AE2;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				90725BBCC0FC1DFCF92980C5 /* PoE2Forge */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		69B36D9BB3BEC4A79E398D60 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E88FD67324240728F55ECDF0 /* Assets.xcassets in Resources */,
+				2311B0EE32063173BC2E130A /* armor.json in Resources */,
+				C299BF0480C7AF171DBE0D0E /* classes.json in Resources */,
+				5531A5AF45F3DD425286401C /* skillGems.json in Resources */,
+				E0FAA00235764A71742BCD88 /* supportGems.json in Resources */,
+				6BC56133B9DA224AC4254BA7 /* weapons.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		334B11B2CE3B23180C0F0425 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2255D46A9892835AD2C9EB68 /* BuildEditorView.swift in Sources */,
+				7D65BAC1BECD8F362532D74B /* BuildsListView.swift in Sources */,
+				9E908F48AF81A62963FD7E93 /* GameDataService.swift in Sources */,
+				63FE45439942EAA70A65EA32 /* GearView.swift in Sources */,
+				6833BEC3AB7AD1357B5A5EC4 /* MainTabView.swift in Sources */,
+				7A8260FFCB122FD277CACB36 /* Models.swift in Sources */,
+				751D4B6813C2591BCC7E2CB8 /* PoE2ForgeApp.swift in Sources */,
+				4108C328833AFBACBACB81EA /* ProgressView_.swift in Sources */,
+				E51BFBCF50D2D62136D20214 /* SkillDetailView.swift in Sources */,
+				0D1DC332EE378512D9058F4B /* SkillsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		636ED4D879DEC00F60A554F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		D37A6EE7BA2CFA5AF23AD786 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		ED5C41A8B517F51473DABEDC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_GENERATION_MODE = GeneratedFile;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.poe2forge.app;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		FBFD1B41349BF293AAE48B6B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_GENERATION_MODE = GeneratedFile;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.poe2forge.app;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6A1C62E5B2D250368745FD51 /* Build configuration list for PBXNativeTarget "PoE2Forge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FBFD1B41349BF293AAE48B6B /* Debug */,
+				ED5C41A8B517F51473DABEDC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FC0166FE8AF8B8338EF1B7DD /* Build configuration list for PBXProject "PoE2Forge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D37A6EE7BA2CFA5AF23AD786 /* Debug */,
+				636ED4D879DEC00F60A554F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 52CE4D7AE9EF6E3A6CF79FBA /* Project object */;
+}

@@ -8,5 +8,15 @@
   {"id": "a7", "name": "Studded Belt", "armorType": "belt", "defense": "3", "requirements": {"level": 1, "strength": 4, "dexterity": null, "intelligence": null}, "rarity": "normal"},
   {"id": "a8", "name": "Silver Ring", "armorType": "ring", "defense": "0", "requirements": {"level": 1, "strength": null, "dexterity": null, "intelligence": null}, "rarity": "normal"},
   {"id": "a9", "name": "Tourmaline Amulet", "armorType": "amulet", "defense": "0", "requirements": {"level": 2, "strength": null, "dexterity": null, "intelligence": 6}, "rarity": "magic"},
-  {"id": "a10", "name": "Plate Armor", "armorType": "bodyArmor", "defense": "50", "requirements": {"level": 6, "strength": 16, "dexterity": null, "intelligence": null}, "rarity": "rare"}
+  {"id": "a10", "name": "Plate Armor", "armorType": "bodyArmor", "defense": "50", "requirements": {"level": 6, "strength": 16, "dexterity": null, "intelligence": null}, "rarity": "rare"},
+  {"id": "a11", "name": "Chainmail Helm", "armorType": "helmet", "defense": "12", "requirements": {"level": 4, "strength": 10, "dexterity": null, "intelligence": null}, "rarity": "normal"},
+  {"id": "a12", "name": " Scholar's Boots", "armorType": "boots", "defense": "6", "requirements": {"level": 2, "strength": null, "dexterity": null, "intelligence": 6}, "rarity": "magic"},
+  {"id": "a13", "name": "Dragonscale Gloves", "armorType": "gloves", "defense": "18", "requirements": {"level": 5, "strength": 12, "dexterity": null, "intelligence": null}, "rarity": "rare"},
+  {"id": "a14", "name": "Golden Buckler", "armorType": "shield", "defense": "28", "requirements": {"level": 4, "strength": 10, "dexterity": 8, "intelligence": null}, "rarity": "magic"},
+  {"id": "a15", "name": "Heavy Belt", "armorType": "belt", "defense": "8", "requirements": {"level": 4, "strength": 10, "dexterity": null, "intelligence": null}, "rarity": "magic"},
+  {"id": "a16", "name": "Ruby Ring", "armorType": "ring", "defense": "0", "requirements": {"level": 3, "strength": 6, "dexterity": null, "intelligence": null}, "rarity": "magic"},
+  {"id": "a17", "name": "Sapphire Amulet", "armorType": "amulet", "defense": "0", "requirements": {"level": 3, "strength": null, "dexterity": null, "intelligence": 8}, "rarity": "magic"},
+  {"id": "a18", "name": "Mage's Vestment", "armorType": "bodyArmor", "defense": "12", "requirements": {"level": 4, "strength": null, "dexterity": null, "intelligence": 12}, "rarity": "magic"},
+  {"id": "a19", "name": "Slink Boots", "armorType": "boots", "defense": "4", "requirements": {"level": 3, "strength": null, "dexterity": 8, "intelligence": null}, "rarity": "magic"},
+  {"id": "a20", "name": "Vanguard Belt", "armorType": "belt", "defense": "12", "requirements": {"level": 7, "strength": 16, "dexterity": null, "intelligence": null}, "rarity": "rare"}
 ]

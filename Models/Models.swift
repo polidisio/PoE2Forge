@@ -56,6 +56,7 @@ enum WeaponType: String, Codable, CaseIterable {
     case dagger = "dagger"
     case claw = "claw"
     case wand = "wand"
+    case scepter = "scepter"
     case twoHandSword = "twoHandSword"
     case twoHandAxe = "twoHandAxe"
     case twoHandMace = "twoHandMace"
@@ -150,21 +151,48 @@ struct Build: Codable, Identifiable {
     let id: UUID
     var name: String
     var forClass: String?
-    var skills: [String]
-    var gear: [String]
+    var equippedItems: [EquippedItem]
+    var skillIds: [String]
     var notes: String
     var createdAt: Date
     var isFavorite: Bool
-    
-    init(id: UUID = UUID(), name: String = "", forClass: String? = nil, skills: [String] = [], gear: [String] = [], notes: String = "", createdAt: Date = Date(), isFavorite: Bool = false) {
+    var characterLevel: Int
+
+    init(
+        id: UUID = UUID(),
+        name: String = "",
+        forClass: String? = nil,
+        equippedItems: [EquippedItem] = [],
+        skillIds: [String] = [],
+        notes: String = "",
+        createdAt: Date = Date(),
+        isFavorite: Bool = false,
+        characterLevel: Int = 1
+    ) {
         self.id = id
         self.name = name
         self.forClass = forClass
-        self.skills = skills
-        self.gear = gear
+        self.equippedItems = equippedItems
+        self.skillIds = skillIds
         self.notes = notes
         self.createdAt = createdAt
         self.isFavorite = isFavorite
+        self.characterLevel = characterLevel
+    }
+
+    // Helper to get equipped item in a specific slot
+    func item(in slot: EquipmentSlot) -> EquippedItem? {
+        equippedItems.first { $0.slot == slot }
+    }
+
+    // Helper to get all equipped weapons
+    var weapons: [EquippedItem] {
+        equippedItems.filter { $0.isWeapon }
+    }
+
+    // Helper to get all equipped armor
+    var armors: [EquippedItem] {
+        equippedItems.filter { !$0.isWeapon }
     }
 }
 

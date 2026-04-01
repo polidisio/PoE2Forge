@@ -4,26 +4,26 @@ struct BuildsListView: View {
     @EnvironmentObject var gameData: GameDataService
     @State private var showingNewBuild = false
     @State private var selectedBuild: Build? = nil
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
                 Color(hex: "0a0a0f").ignoresSafeArea()
-                
+
                 if gameData.builds.isEmpty {
                     VStack(spacing: 16) {
                         Image(systemName: "person.3")
                             .font(.system(size: 60))
                             .foregroundColor(.gray)
-                        
+
                         Text("No Builds Yet")
                             .font(.title2)
                             .foregroundColor(.white)
-                        
+
                         Text("Create your first build to get started")
                             .font(.subheadline)
                             .foregroundColor(.gray)
-                        
+
                         Button(action: { showingNewBuild = true }) {
                             Label("New Build", systemImage: "plus")
                                 .padding(.horizontal, 20)
@@ -65,8 +65,8 @@ struct BuildsListView: View {
             .sheet(isPresented: $showingNewBuild) {
                 BuildEditorView(build: nil)
             }
-            .sheet(item: $selectedBuild) { build in
-                BuildEditorView(build: build)
+            .navigationDestination(item: $selectedBuild) { build in
+                BuildDetailView(build: build)
             }
         }
     }
@@ -101,7 +101,7 @@ struct BuildRow: View {
                             .cornerRadius(4)
                     }
                     
-                    Text("\(build.skills.count) skills")
+                    Text("\(build.skillIds.count) skills")
                         .font(.caption)
                         .foregroundColor(.gray)
                 }

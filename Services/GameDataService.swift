@@ -24,29 +24,71 @@ class GameDataService: ObservableObject {
     }
 
     func loadData() {
-        // NOTE: JSON files contain swapped data - fix by loading correct files
-        // classes.json contains SkillGem data -> load into skillGems
-        // skillGems.json contains CharacterClass data -> load into classes
-        // weapons.json contains SupportGem data -> load into supportGems
-        // supportGems.json contains Weapon data -> load into weapons
-        // armor.json contains Armor data -> load into armors (correct)
-        classes = loadJSON("skillGems") ?? []
-        skillGems = loadJSON("classes") ?? []
-        supportGems = loadJSON("weapons") ?? []
-        weapons = loadJSON("supportGems") ?? []
-        armors = loadJSON("armor") ?? []
-        passiveSkills = loadJSON("passiveSkills") ?? []
-        flaskData = FlaskData.sampleFlasks
-    }
-    
-    private func loadJSON<T: Decodable>(_ name: String) -> T? {
-        guard let url = Bundle.main.url(forResource: name, withExtension: "json"),
-              let data = try? Data(contentsOf: url) else {
-            return nil
+        // Load data from JSON files
+        print("Bundle resource path: \(Bundle.main.resourcePath ?? "nil")")
+
+        // Load passive skills
+        if let loaded: [PassiveSkillNode] = loadJSON("passiveSkills") {
+            passiveSkills = loaded
+        } else {
+            passiveSkills = PassiveSkillNode.sampleNodes
         }
-        return try? JSONDecoder().decode(T.self, from: data)
+
+        // Load armor
+        if let loaded: [Armor] = loadJSON("armor") {
+            armors = loaded
+        } else {
+            armors = Armor.sampleArmors
+        }
+
+        // Load weapons
+        if let loaded: [Weapon] = loadJSON("weapons") {
+            weapons = loaded
+        } else {
+            weapons = Weapon.sampleWeapons
+        }
+
+        // Load skill gems
+        if let loaded: [SkillGem] = loadJSON("skillGems") {
+            skillGems = loaded
+        } else {
+            skillGems = SkillGem.sampleGems
+        }
+
+        // Classes - use sample since JSON has wrong content
+        classes = CharacterClass.sampleClasses
+
+        // Load support gems
+        if let loaded: [SupportGem] = loadJSON("supportGems") {
+            supportGems = loaded
+        } else {
+            supportGems = SupportGem.sampleSupportGems
+        }
+
+        flaskData = FlaskData.sampleFlasks
+
+        print("Loaded: \(passiveSkills.count) passive skills, \(weapons.count) weapons, \(armors.count) armors, \(skillGems.count) skill gems, \(supportGems.count) support gems")
     }
-    
+
+    private func loadJSON<T: Decodable>(_ name: String) -> T? {
+        // Try direct bundle path first
+        if let url = Bundle.main.url(forResource: name, withExtension: "json"),
+           let data = try? Data(contentsOf: url) {
+            print("Loaded \(name).json from bundle root")
+            return try? JSONDecoder().decode(T.self, from: data)
+        }
+
+        // Try Resources subdirectory
+        if let url = Bundle.main.url(forResource: name, withExtension: "json", subdirectory: "Resources"),
+           let data = try? Data(contentsOf: url) {
+            print("Loaded \(name).json from Resources/")
+            return try? JSONDecoder().decode(T.self, from: data)
+        }
+
+        print("Failed to find \(name).json")
+        return nil
+    }
+
     // MARK: - Builds
     func loadBuilds() {
         guard let decoded = try? JSONDecoder().decode([Build].self, from: buildsData) else {

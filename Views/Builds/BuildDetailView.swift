@@ -190,28 +190,23 @@ struct BuildDetailView: View {
                 if let slot = selectedSlot {
                     SlotGearPickerView(slot: slot, build: $gearPickerBuild)
                         .onDisappear {
-                            var updatedBuild = build
-                            updatedBuild.gearSets = gearPickerBuild.gearSets
-                            gameData.saveBuild(updatedBuild)
+                            // gearPickerBuild has the latest changes, save directly
+                            gameData.saveBuild(gearPickerBuild)
                         }
                 }
             }
             .sheet(isPresented: $showingPassiveTreeSheet) {
                 PassiveTreeView(build: $passiveTreeBuild)
                     .onDisappear {
-                        // Sync changes back to the original build
-                        var updatedBuild = build
-                        updatedBuild.passiveTree = passiveTreeBuild.passiveTree
-                        gameData.saveBuild(updatedBuild)
+                        // passiveTreeBuild has the latest changes, save directly
+                        gameData.saveBuild(passiveTreeBuild)
                     }
             }
             .sheet(isPresented: $showingSkillSocketSheet) {
                 SkillSocketView(build: $skillSocketBuild)
                     .onDisappear {
-                        var updatedBuild = build
-                        updatedBuild.skillIds = skillSocketBuild.skillIds
-                        updatedBuild.skillSockets = skillSocketBuild.skillSockets
-                        gameData.saveBuild(updatedBuild)
+                        // skillSocketBuild has the latest changes, save directly
+                        gameData.saveBuild(skillSocketBuild)
                     }
             }
             .sheet(isPresented: $showingDPS) {

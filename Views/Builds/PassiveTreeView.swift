@@ -5,9 +5,14 @@ struct PassiveTreeView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var build: Build
 
-    @State private var scale: CGFloat = 0.6
+    @State private var scale: CGFloat = 1.0
     @State private var offset: CGSize = .zero
     @State private var lastOffset: CGSize = .zero
+    @State private var selectedNode: PassiveSkillNode?
+    @State private var searchText = ""
+
+    // Initial offset to center the tree
+    @State private var initialOffset: CGSize = CGSize(width: -350, height: -400)
 
     var passiveBonus: PassiveBonus {
         gameData.calculatePassiveBonus(for: build)
@@ -17,66 +22,102 @@ struct PassiveTreeView: View {
         build.passiveTree.allocatedNodes.count
     }
 
+    var filteredNodes: [PassiveSkillNode] {
+        if searchText.isEmpty {
+            return gameData.passiveSkills
+        }
+        return gameData.passiveSkills.filter { node in
+            node.name.localizedCaseInsensitiveContains(searchText) ||
+            node.stats.keys.contains { $0.localizedCaseInsensitiveContains(searchText) }
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
                 Color(hex: "0a0a0f").ignoresSafeArea()
 
-                // Scrollable canvas
-                ScrollView([.horizontal, .vertical], showsIndicators: false) {
-                    ZStack {
-                        // Draw connections first (behind nodes)
-                        ConnectionsView(
-                            nodes: gameData.passiveSkills,
-                            allocatedNodes: build.passiveTree.allocatedNodes
-                        )
-                        .frame(width: 1000, height: 1200)
-
-                        // Draw nodes
-                        ForEach(gameData.passiveSkills) { node in
-                            let isAllocated = gameData.passiveNodeIsAllocated(node.id, in: build)
-                            let canAllocate = gameData.passiveNodeCanAllocate(node.id, in: build)
-
-                            NodeView(
-                                node: node,
-                                isAllocated: isAllocated,
-                                canAllocate: canAllocate
-                            )
-                            .position(
-                                x: node.position.x + 100,
-                                y: node.position.y + 100
-                            )
-                            .onTapGesture {
-                                toggleNode(node.id)
+                // Search bar
+                VStack {
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.gray)
+                        TextField("Search nodes...", text: $searchText)
+                            .foregroundColor(.white)
+                        if !searchText.isEmpty {
+                            Button {
+                                searchText = ""
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.gray)
                             }
                         }
                     }
-                    .frame(width: 1000, height: 1200)
-                    .scaleEffect(scale)
-                    .offset(offset)
-                    .gesture(
-                        MagnificationGesture()
-                            .onChanged { value in
-                                scale = max(0.3, min(2.0, value))
-                            }
-                    )
-                    .simultaneousGesture(
-                        DragGesture()
-                            .onChanged { value in
-                                offset = CGSize(
-                                    width: lastOffset.width + value.translation.width,
-                                    height: lastOffset.height + value.translation.height
-                                )
-                            }
-                            .onEnded { _ in
-                                lastOffset = offset
-                            }
-                    )
-                }
+                    .padding(10)
+                    .background(Color(hex: "1a1a24"))
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+                    .padding(.top, 8)
 
-                // Stats overlay at bottom
-                VStack {
-                    Spacer()
+                    // Scrollable canvas
+                    ScrollView([.horizontal, .vertical], showsIndicators: true) {
+                        ZStack {
+                            // Draw connections first (behind nodes)
+                            ConnectionsView(
+                                nodes: filteredNodes,
+                                allocatedNodes: build.passiveTree.allocatedNodes
+                            )
+                            .frame(width: 700, height: 900)
+
+                            // Draw nodes
+                            ForEach(filteredNodes) { node in
+                                let isAllocated = gameData.passiveNodeIsAllocated(node.id, in: build)
+                                let canAllocate = gameData.passiveNodeCanAllocate(node.id, in: build)
+
+                                NodeView(
+                                    node: node,
+                                    isAllocated: isAllocated,
+                                    canAllocate: canAllocate,
+                                    isSelected: selectedNode?.id == node.id
+                                )
+                                .position(
+                                    x: node.position.x + 50,
+                                    y: node.position.y + 50
+                                )
+                                .onTapGesture {
+                                    if isAllocated || canAllocate {
+                                        selectedNode = node
+                                    } else if !isAllocated && !canAllocate {
+                                        // Show locked message
+                                        let _ = print("Node \(node.name) requires connecting path")
+                                    }
+                                }
+                            }
+                        }
+                        .frame(width: 700, height: 900)
+                        .scaleEffect(scale)
+                        .offset(offset)
+                        .gesture(
+                            MagnificationGesture()
+                                .onChanged { value in
+                                    scale = max(0.3, min(2.0, value))
+                                }
+                        )
+                        .simultaneousGesture(
+                            DragGesture()
+                                .onChanged { value in
+                                    offset = CGSize(
+                                        width: lastOffset.width + value.translation.width,
+                                        height: lastOffset.height + value.translation.height
+                                    )
+                                }
+                                .onEnded { _ in
+                                    lastOffset = offset
+                                }
+                        )
+                    }
+
+                    // Stats overlay at bottom
                     PassiveStatsOverlay(bonus: passiveBonus, allocatedCount: allocatedCount)
                 }
             }
@@ -97,6 +138,20 @@ struct PassiveTreeView: View {
                     .foregroundColor(.red)
                 }
             }
+            .sheet(item: $selectedNode) { node in
+                NodeDetailSheet(
+                    node: node,
+                    isAllocated: build.passiveTree.isAllocated(node.id),
+                    canAllocate: gameData.passiveNodeCanAllocate(node.id, in: build),
+                    onToggle: {
+                        toggleNode(node.id)
+                    },
+                    onDismiss: {
+                        selectedNode = nil
+                    }
+                )
+                .presentationDetents([.medium])
+            }
         }
     }
 
@@ -114,6 +169,7 @@ struct PassiveTreeView: View {
         }
 
         build.passiveTree.toggleNode(nodeId)
+        selectedNode = nil
     }
 }
 
@@ -154,6 +210,7 @@ struct NodeView: View {
     let node: PassiveSkillNode
     let isAllocated: Bool
     let canAllocate: Bool
+    var isSelected: Bool = false
 
     var nodeColor: Color {
         if isAllocated {
@@ -176,6 +233,13 @@ struct NodeView: View {
 
     var body: some View {
         ZStack {
+            // Outer glow for selected
+            if isSelected {
+                Circle()
+                    .stroke(Color(hex: "e07020").opacity(0.5), lineWidth: 8)
+                    .frame(width: nodeSize + 20, height: nodeSize + 20)
+            }
+
             // Outer ring
             Circle()
                 .stroke(nodeColor, lineWidth: node.type == .keystone ? 4 : 3)
@@ -202,6 +266,172 @@ struct NodeView: View {
             }
         }
         .shadow(color: isAllocated ? Color(hex: "e07020").opacity(0.5) : .clear, radius: 8)
+    }
+}
+
+struct NodeDetailSheet: View {
+    let node: PassiveSkillNode
+    let isAllocated: Bool
+    let canAllocate: Bool
+    let onToggle: () -> Void
+    let onDismiss: () -> Void
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 20) {
+                // Node header
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(node.name)
+                            .font(.headline)
+                            .foregroundColor(.white)
+
+                        Text(node.type.displayName)
+                            .font(.caption)
+                            .foregroundColor(Color(hex: node.rarityColor))
+                    }
+
+                    Spacer()
+
+                    // Status badge
+                    Text(isAllocated ? "Allocated" : (canAllocate ? "Available" : "Locked"))
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(statusColor)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                }
+                .padding()
+                .background(Color(hex: "1a1a24"))
+                .cornerRadius(12)
+
+                // Stats section
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("STATS")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+
+                    if node.stats.isEmpty {
+                        Text("No stats")
+                            .foregroundColor(.gray)
+                            .italic()
+                    } else {
+                        ForEach(Array(node.stats.keys.sorted()), id: \.self) { key in
+                            if let value = node.stats[key] {
+                                let isPercent = key == "percent" && value == 1
+                                let displayValue = isPercent ? "%" : "+\(value)"
+                                let statName = formatStatName(key)
+
+                                HStack {
+                                    Circle()
+                                        .fill(Color(hex: "e07020"))
+                                        .frame(width: 6, height: 6)
+
+                                    Text(statName)
+                                        .foregroundColor(.white)
+
+                                    Spacer()
+
+                                    Text(displayValue)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(isPercent ? Color(hex: "22c55e") : Color(hex: "e07020"))
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding()
+                .background(Color(hex: "1a1a24"))
+                .cornerRadius(12)
+
+                // Connections info
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("CONNECTIONS")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+
+                    Text("\(node.connections.count) connected nodes")
+                        .foregroundColor(.white)
+                }
+                .padding()
+                .background(Color(hex: "1a1a24"))
+                .cornerRadius(12)
+
+                Spacer()
+
+                // Action button
+                if canAllocate || isAllocated {
+                    Button(action: onToggle) {
+                        Text(isAllocated ? "Deallocate" : "Allocate")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(isAllocated ? Color.red.opacity(0.8) : Color(hex: "e07020"))
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
+                    }
+                } else {
+                    Text("Allocate nearby nodes to unlock this one")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }
+            }
+            .padding()
+            .background(Color(hex: "0a0a0f"))
+            .navigationTitle("Node Details")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Close") {
+                        onDismiss()
+                    }
+                    .foregroundColor(Color(hex: "e07020"))
+                }
+            }
+        }
+    }
+
+    var statusColor: Color {
+        if isAllocated {
+            return Color(hex: "22c55e")
+        } else if canAllocate {
+            return Color(hex: "3b82f6")
+        } else {
+            return Color(hex: "6b7280")
+        }
+    }
+
+    func formatStatName(_ key: String) -> String {
+        switch key {
+        case "strength": return "Strength"
+        case "dexterity": return "Dexterity"
+        case "intelligence": return "Intelligence"
+        case "meleeDamage": return "Melee Damage"
+        case "projectileDamage": return "Projectile Damage"
+        case "spellDamage": return "Spell Damage"
+        case "elementalDamage": return "Elemental Damage"
+        case "armor": return "Armor"
+        case "evasion": return "Evasion"
+        case "minionDamage": return "Minion Damage"
+        case "minionLife": return "Minion Life"
+        case "maxMana": return "Maximum Mana"
+        case "castSpeed": return "Cast Speed"
+        case "attackSpeed": return "Attack Speed"
+        case "lifeOnHit": return "Life on Hit"
+        case "dodgeChance": return "Dodge Chance"
+        case "chainCount": return "Chain"
+        case "projectileSpeed": return "Projectile Speed"
+        case "critMultiplier": return "Crit Multiplier"
+        case "elementalPenetration": return "Elemental Penetration"
+        case "bowDamage": return "Bow Damage"
+        case "movementSpeed": return "Movement Speed"
+        case "overpowerDamage": return "Overpower Damage"
+        default: return key.capitalized
+        }
     }
 }
 

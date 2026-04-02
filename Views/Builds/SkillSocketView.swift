@@ -38,6 +38,16 @@ struct SkillSocketView: View {
                             var updatedSocket = socket
                             updatedSocket.supportGemIds.removeAll { $0 == supportId }
                             build.updateSocket(for: skill.id, with: updatedSocket)
+                        },
+                        onUpdateLevel: { newLevel in
+                            var updatedSocket = socket
+                            updatedSocket.level = newLevel
+                            build.updateSocket(for: skill.id, with: updatedSocket)
+                        },
+                        onUpdateQuality: { newQuality in
+                            var updatedSocket = socket
+                            updatedSocket.quality = newQuality
+                            build.updateSocket(for: skill.id, with: updatedSocket)
                         }
                     )
                     .listRowBackground(Color(hex: "1a1a24"))
@@ -70,12 +80,15 @@ struct SkillSocketView: View {
 }
 
 struct SkillSocketRow: View {
+    @EnvironmentObject var gameData: GameDataService
     let skill: SkillGem
     let socket: SkillSocket
     let isSelected: Bool
     let onTap: () -> Void
     let onAddSupport: () -> Void
     let onRemoveSupport: (String) -> Void
+    let onUpdateLevel: (Int) -> Void
+    let onUpdateQuality: (Int) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -91,6 +104,14 @@ struct SkillSocketRow: View {
 
                     Spacer()
 
+                    // Gem level and quality
+                    Text("Lvl \(socket.level)")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                    Text("Q\(socket.quality)%")
+                        .font(.caption)
+                        .foregroundColor(Color(hex: "22c55e"))
+
                     if !socket.supportGemIds.isEmpty {
                         Text("\(socket.supportGemIds.count) supports")
                             .font(.caption)
@@ -105,6 +126,42 @@ struct SkillSocketRow: View {
             // Socketed supports
             if isSelected {
                 VStack(alignment: .leading, spacing: 8) {
+                    // Level and Quality controls
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text("Gem Level")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                            Stepper("Lvl \(socket.level)", value: Binding(
+                                get: { socket.level },
+                                set: { onUpdateLevel($0) }
+                            ), in: 1...30)
+                            .labelsHidden()
+                            Text("Level \(socket.level)")
+                                .font(.caption2)
+                                .foregroundColor(.white)
+                        }
+
+                        Spacer()
+
+                        VStack(alignment: .trailing) {
+                            Text("Quality")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                            Stepper("Q\(socket.quality)%", value: Binding(
+                                get: { socket.quality },
+                                set: { onUpdateQuality($0) }
+                            ), in: 0...23)
+                            .labelsHidden()
+                            Text("\(socket.quality)%")
+                                .font(.caption2)
+                                .foregroundColor(Color(hex: "22c55e"))
+                        }
+                    }
+                    .padding(.vertical, 8)
+
+                    Divider().background(Color.gray.opacity(0.3))
+
                     // Existing supports
                     ForEach(socket.supportGemIds, id: \.self) { supportId in
                         if let support = getSupport(id: supportId) {
@@ -145,7 +202,7 @@ struct SkillSocketRow: View {
 
                     // Damage preview
                     if !socket.supportGemIds.isEmpty {
-                        let multiplier = socket.damageMultiplier(gameData: GameDataService.shared)
+                        let multiplier = socket.damageMultiplier(supportGems: gameData.supportGems)
                         HStack {
                             Text("Damage Multiplier:")
                                 .font(.caption)
@@ -178,7 +235,7 @@ struct SkillSocketRow: View {
     }
 
     func getSupport(id: String) -> SupportGem? {
-        GameDataService.shared.supportGems.first { $0.id == id }
+        gameData.supportGems.first { $0.id == id }
     }
 }
 

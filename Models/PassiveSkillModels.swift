@@ -84,7 +84,7 @@ struct PassiveSkillNode: Codable, Identifiable {
 }
 
 // MARK: - Passive Tree
-struct PassiveTree: Codable {
+struct PassiveTree: Codable, Hashable {
     var allocatedNodes: Set<String>
 
     init(allocatedNodes: Set<String> = []) {

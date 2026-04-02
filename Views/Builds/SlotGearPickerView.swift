@@ -4,15 +4,35 @@ struct SlotGearPickerView: View {
     @EnvironmentObject var gameData: GameDataService
     @Environment(\.dismiss) var dismiss
     let slot: EquipmentSlot
-    let currentBuild: Build
+    @Binding var build: Build
 
     @State private var searchText = ""
-    @State private var draftBuild: Build
+    @State private var selectedItemId: String?
+    @State private var selectedIsWeapon: Bool = false
+    @State private var showAllItems: Bool = false
 
-    init(slot: EquipmentSlot, currentBuild: Build) {
-        self.slot = slot
-        self.currentBuild = currentBuild
-        self._draftBuild = State(initialValue: currentBuild)
+    // Currently equipped item
+    var currentlyEquipped: EquippedItem? {
+        build.item(in: slot)
+    }
+
+    // Character stats for level filtering
+    var characterLevel: Int {
+        build.characterLevel
+    }
+
+    var characterStats: CharacterStats {
+        gameData.calculateStats(for: build)
+    }
+
+    // Comparison when item is selected
+    var itemComparison: ItemComparison? {
+        guard let selectedId = selectedItemId else { return nil }
+        return gameData.compareItems(
+            oldItemId: currentlyEquipped?.itemId,
+            newItemId: selectedId,
+            isWeapon: selectedIsWeapon
+        )
     }
 
     // Determine what type of items can be equipped in this slot
@@ -48,12 +68,42 @@ struct SlotGearPickerView: View {
         }
     }
 
+    // Check if item meets requirements
+    func canEquip(weapon: Weapon) -> Bool {
+        let reqs = weapon.requirements
+        if characterLevel < reqs.level { return false }
+        if let str = reqs.strength, characterStats.totalStrength < str { return false }
+        if let dex = reqs.dexterity, characterStats.totalDexterity < dex { return false }
+        if let int = reqs.intelligence, characterStats.totalIntelligence < int { return false }
+        return true
+    }
+
+    func canEquip(armor: Armor) -> Bool {
+        let reqs = armor.requirements
+        if characterLevel < reqs.level { return false }
+        if let str = reqs.strength, characterStats.totalStrength < str { return false }
+        if let dex = reqs.dexterity, characterStats.totalDexterity < dex { return false }
+        if let int = reqs.intelligence, characterStats.totalIntelligence < int { return false }
+        return true
+    }
+
+    // Filtered weapons by search and level
     var filteredWeapons: [Weapon] {
         gameData.weapons.filter { weapon in
-            searchText.isEmpty || weapon.name.localizedCaseInsensitiveContains(searchText)
+            let searchMatch = searchText.isEmpty || weapon.name.localizedCaseInsensitiveContains(searchText)
+            return searchMatch
         }
     }
 
+    var equippableWeapons: [Weapon] {
+        filteredWeapons.filter { canEquip(weapon: $0) }
+    }
+
+    var unequippableWeapons: [Weapon] {
+        filteredWeapons.filter { !canEquip(weapon: $0) }
+    }
+
+    // Filtered armors by search and level
     var filteredArmors: [Armor] {
         guard let armorType = armorTypeForSlot(slot) else { return [] }
         return gameData.armors.filter { armor in
@@ -63,19 +113,54 @@ struct SlotGearPickerView: View {
         }
     }
 
+    var equippableArmors: [Armor] {
+        filteredArmors.filter { canEquip(armor: $0) }
+    }
+
+    var unequippableArmors: [Armor] {
+        filteredArmors.filter { !canEquip(armor: $0) }
+    }
+
     var body: some View {
         NavigationStack {
             List {
+                // Character level header
+                Section {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Character Level")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                            Text("\(characterLevel)")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                        }
+
+                        Spacer()
+
+                        Toggle("Show All Items", isOn: $showAllItems)
+                            .toggleStyle(.switch)
+                            .tint(Color(hex: "e07020"))
+                            .labelsHidden()
+
+                        Text(showAllItems ? "Showing All" : "Equippable Only")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                }
+                .listRowBackground(Color(hex: "1a1a24"))
+
                 // Currently equipped section
-                if let equipped = draftBuild.item(in: slot) {
+                if let equipped = build.item(in: slot) {
                     Section("CURRENTLY EQUIPPED") {
                         if let weapon = gameData.weaponBy(id: equipped.itemId) {
-                            WeaponPickerRow(weapon: weapon, isSelected: true) {
+                            WeaponPickerRow(weapon: weapon, isSelected: true, isEquippable: true) {
                                 unequipSlot()
                             }
                             .listRowBackground(Color(hex: "1a1a24"))
                         } else if let armor = gameData.armorBy(id: equipped.itemId) {
-                            ArmorPickerRow(armor: armor, isSelected: true) {
+                            ArmorPickerRow(armor: armor, isSelected: true, isEquippable: true) {
                                 unequipSlot()
                             }
                             .listRowBackground(Color(hex: "1a1a24"))
@@ -83,24 +168,48 @@ struct SlotGearPickerView: View {
                     }
                 }
 
-                // Available weapons
-                if canEquipWeapon && !filteredWeapons.isEmpty {
-                    Section("WEAPONS") {
-                        ForEach(filteredWeapons) { weapon in
-                            WeaponPickerRow(weapon: weapon, isSelected: false) {
-                                equipWeapon(weapon)
+                // Available weapons - equippable
+                if canEquipWeapon && !equippableWeapons.isEmpty {
+                    Section("WEAPONS (EQUIPPABLE)") {
+                        ForEach(equippableWeapons) { weapon in
+                            WeaponPickerRow(weapon: weapon, isSelected: false, isEquippable: true) {
+                                selectWeapon(weapon)
                             }
                             .listRowBackground(Color(hex: "1a1a24"))
                         }
                     }
                 }
 
-                // Available armor
-                if canEquipArmor && !filteredArmors.isEmpty {
-                    Section("ARMOR (\(slot.displayName.uppercased()))") {
-                        ForEach(filteredArmors) { armor in
-                            ArmorPickerRow(armor: armor, isSelected: false) {
-                                equipArmor(armor)
+                // Available weapons - unequippable
+                if canEquipWeapon && showAllItems && !unequippableWeapons.isEmpty {
+                    Section("WEAPONS (LEVEL TOO HIGH)") {
+                        ForEach(unequippableWeapons) { weapon in
+                            WeaponPickerRow(weapon: weapon, isSelected: false, isEquippable: false) {
+                                selectWeapon(weapon)
+                            }
+                            .listRowBackground(Color(hex: "1a1a24"))
+                        }
+                    }
+                }
+
+                // Available armor - equippable
+                if canEquipArmor && !equippableArmors.isEmpty {
+                    Section("ARMOR (\(slot.displayName.uppercased())) - EQUIPPABLE") {
+                        ForEach(equippableArmors) { armor in
+                            ArmorPickerRow(armor: armor, isSelected: false, isEquippable: true) {
+                                selectArmor(armor)
+                            }
+                            .listRowBackground(Color(hex: "1a1a24"))
+                        }
+                    }
+                }
+
+                // Available armor - unequippable
+                if canEquipArmor && showAllItems && !unequippableArmors.isEmpty {
+                    Section("ARMOR (LEVEL TOO HIGH)") {
+                        ForEach(unequippableArmors) { armor in
+                            ArmorPickerRow(armor: armor, isSelected: false, isEquippable: false) {
+                                selectArmor(armor)
                             }
                             .listRowBackground(Color(hex: "1a1a24"))
                         }
@@ -121,57 +230,78 @@ struct SlotGearPickerView: View {
                     .foregroundColor(Color(hex: "e07020"))
                 }
             }
+            // Comparison panel at bottom
+            if let comparison = itemComparison, selectedItemId != nil {
+                ItemComparisonPanel(
+                    comparison: comparison,
+                    onEquip: {
+                        if selectedIsWeapon, let weapon = gameData.weaponBy(id: selectedItemId!) {
+                            equipWeapon(weapon)
+                        } else if let armor = gameData.armorBy(id: selectedItemId!) {
+                            equipArmor(armor)
+                        }
+                        selectedItemId = nil
+                    },
+                    onCancel: {
+                        selectedItemId = nil
+                    }
+                )
+            }
         }
+    }
+
+    func selectWeapon(_ weapon: Weapon) {
+        selectedItemId = weapon.id
+        selectedIsWeapon = true
+    }
+
+    func selectArmor(_ armor: Armor) {
+        selectedItemId = armor.id
+        selectedIsWeapon = false
     }
 
     func unequipSlot() {
-        draftBuild.equippedItems.removeAll { $0.slot == slot }
-        gameData.saveBuild(draftBuild)
+        build.removeItem(in: slot)
+        gameData.saveBuild(build)
     }
 
     func equipWeapon(_ weapon: Weapon) {
-        // Remove any existing item in this slot
-        draftBuild.equippedItems.removeAll { $0.slot == slot }
-
         // If two-handed weapon, remove offHand item
         if weapon.weaponType.isTwoHanded {
-            draftBuild.equippedItems.removeAll { $0.slot == .offHand }
+            build.removeItem(in: .offHand)
         }
 
         // Equip new weapon
-        draftBuild.equippedItems.append(EquippedItem(
+        build.updateItem(EquippedItem(
             itemId: weapon.id,
             slot: slot,
             isWeapon: true
         ))
 
-        gameData.saveBuild(draftBuild)
+        gameData.saveBuild(build)
         dismiss()
     }
 
     func equipArmor(_ armor: Armor) {
-        // Remove any existing item in this slot
-        draftBuild.equippedItems.removeAll { $0.slot == slot }
-
         // Handle ring slot - alternate between ring1 and ring2
         var actualSlot = slot
         if slot == .ring1 || slot == .ring2 {
-            if draftBuild.item(in: .ring1) != nil && draftBuild.item(in: .ring2) != nil {
+            if build.item(in: .ring1) != nil && build.item(in: .ring2) != nil {
                 // Both rings full, replace ring1
-                draftBuild.equippedItems.removeAll { $0.slot == .ring1 }
+                build.removeItem(in: .ring1)
                 actualSlot = .ring1
-            } else if draftBuild.item(in: .ring1) != nil {
+            } else if build.item(in: .ring1) != nil {
                 actualSlot = .ring2
             }
         }
 
-        draftBuild.equippedItems.append(EquippedItem(
+        build.updateItem(EquippedItem(
             itemId: armor.id,
             slot: actualSlot,
             isWeapon: false
         ))
 
-        gameData.saveBuild(draftBuild)
+        gameData.saveBuild(build)
         dismiss()
     }
 }
@@ -179,6 +309,7 @@ struct SlotGearPickerView: View {
 struct WeaponPickerRow: View {
     let weapon: Weapon
     let isSelected: Bool
+    let isEquippable: Bool
     let action: () -> Void
 
     var body: some View {
@@ -187,13 +318,14 @@ struct WeaponPickerRow: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(weapon.name)
                         .fontWeight(.medium)
-                        .foregroundColor(Color(hex: weapon.rarity.color))
+                        .foregroundColor(isEquippable ? Color(hex: weapon.rarity.color) : .gray)
                     HStack {
                         Text(weapon.weaponType.displayName)
                         Text("Lvl \(weapon.requirements.level)")
+                            .foregroundColor(isEquippable ? .gray : .red)
                     }
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundColor(isEquippable ? .gray : .red)
                 }
 
                 Spacer()
@@ -201,10 +333,10 @@ struct WeaponPickerRow: View {
                 VStack(alignment: .trailing) {
                     Text(weapon.damage + " dmg")
                         .font(.subheadline)
-                        .foregroundColor(.orange)
+                        .foregroundColor(isEquippable ? .orange : .gray)
                     Text(weapon.aps + " APS")
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundColor(isEquippable ? .gray : .gray.opacity(0.5))
                 }
 
                 if isSelected {
@@ -214,12 +346,14 @@ struct WeaponPickerRow: View {
                 }
             }
         }
+        .opacity(isEquippable ? 1.0 : 0.5)
     }
 }
 
 struct ArmorPickerRow: View {
     let armor: Armor
     let isSelected: Bool
+    let isEquippable: Bool
     let action: () -> Void
 
     var body: some View {
@@ -228,20 +362,20 @@ struct ArmorPickerRow: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(armor.name)
                         .fontWeight(.medium)
-                        .foregroundColor(Color(hex: armor.rarity.color))
+                        .foregroundColor(isEquippable ? Color(hex: armor.rarity.color) : .gray)
                     HStack {
                         Text(armor.armorType.displayName)
                         Text("Lvl \(armor.requirements.level)")
                     }
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundColor(isEquippable ? .gray : .red)
                 }
 
                 Spacer()
 
                 Text(armor.defense + " def")
                     .font(.subheadline)
-                    .foregroundColor(Color(hex: "60a5fa"))
+                    .foregroundColor(isEquippable ? Color(hex: "60a5fa") : .gray)
 
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")
@@ -250,5 +384,80 @@ struct ArmorPickerRow: View {
                 }
             }
         }
+        .opacity(isEquippable ? 1.0 : 0.5)
+    }
+}
+
+struct ItemComparisonPanel: View {
+    let comparison: ItemComparison
+    let onEquip: () -> Void
+    let onCancel: () -> Void
+
+    var body: some View {
+        VStack(spacing: 12) {
+            // Header
+            HStack {
+                Text("COMPARING")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                Spacer()
+                Text(comparison.itemName)
+                    .font(.headline)
+                    .foregroundColor(.white)
+                Spacer()
+                Text(comparison.summaryText)
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundColor(comparison.isImprovement ? .green : (comparison.isWorse ? .red : .gray))
+            }
+
+            // Stat differences
+            if comparison.hasOldItem {
+                VStack(spacing: 6) {
+                    ForEach(comparison.statDiffs) { diff in
+                        HStack {
+                            Text(diff.statName)
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                            Spacer()
+                            if !diff.isSame {
+                                Text(diff.diffText)
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(diff.isImprovement ? .green : .red)
+                            } else {
+                                Text("-")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                    }
+                }
+            } else {
+                Text("New item - no comparison available")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                    .italic()
+            }
+
+            // Action buttons
+            HStack(spacing: 16) {
+                Button("Cancel") {
+                    onCancel()
+                }
+                .foregroundColor(.gray)
+
+                Button("Equip") {
+                    onEquip()
+                }
+                .foregroundColor(Color(hex: "e07020"))
+                .fontWeight(.bold)
+            }
+            .padding(.top, 8)
+        }
+        .padding()
+        .background(Color(hex: "1a1a24"))
+        .cornerRadius(16)
+        .padding()
     }
 }

@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - Skill Socket (support gems linked to a skill)
-struct SkillSocket: Codable, Equatable {
+struct SkillSocket: Codable, Equatable, Hashable {
     var supportGemIds: [String]
     var level: Int
     var quality: Int
@@ -13,10 +13,10 @@ struct SkillSocket: Codable, Equatable {
     }
 
     // Calculate the multiplier from support gems
-    func damageMultiplier(gameData: GameDataService) -> Double {
+    func damageMultiplier(supportGems: [SupportGem]) -> Double {
         var multiplier = 1.0
         for supportId in supportGemIds {
-            guard let support = gameData.supportGems.first(where: { $0.id == supportId }) else { continue }
+            guard let support = supportGems.first(where: { $0.id == supportId }) else { continue }
             if let multStr = support.damageMultiplier,
                let mult = parseMultiplier(multStr) {
                 multiplier += mult / 100.0
@@ -42,6 +42,8 @@ struct SkillSocket: Codable, Equatable {
 struct DPSCalculation: Equatable {
     var skillId: String
     var skillName: String
+    var gemLevel: Int
+    var gemQuality: Int
     var baseDamage: Double
     var effectiveDamage: Double
     var damageMultiplier: Double
@@ -58,6 +60,7 @@ struct DPSCalculation: Equatable {
     // Breakdown text for display
     var breakdown: [String] {
         var lines: [String] = []
+        lines.append("Gem Level: \(gemLevel), Quality: \(gemQuality)%")
         lines.append("Base Damage: \(String(format: "%.0f", baseDamage))")
         if damageMultiplier != 1.0 {
             lines.append("Multiplier: x\(String(format: "%.2f", damageMultiplier))")
@@ -73,6 +76,8 @@ struct DPSCalculation: Equatable {
         if critChance > 0 {
             lines.append("Crit Chance: \(String(format: "%.1f", critChance))%")
             lines.append("Crit Multiplier: x\(String(format: "%.2f", critMultiplier))")
+            let avgCritDPS = effectiveDPS * (1 + (critChance / 100) * (critMultiplier - 1))
+            lines.append("Avg DPS (w/ crit): \(String(format: "%.0f", avgCritDPS))")
         }
         return lines
     }

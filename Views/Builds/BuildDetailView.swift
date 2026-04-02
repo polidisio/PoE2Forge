@@ -10,7 +10,16 @@ struct BuildDetailView: View {
     @State private var showingPassiveTree = false
     @State private var showingSkillSocket = false
     @State private var showingDPS = false
+    @State private var showingFlasks = false
+    @State private var showingLevelingGuide = false
+    @State private var showingExport = false
     @State private var selectedSlot: EquipmentSlot?
+    @State private var passiveTreeBuild: Build = Build(name: "", characterLevel: 1)
+    @State private var showingPassiveTreeSheet = false
+    @State private var skillSocketBuild: Build = Build(name: "", characterLevel: 1)
+    @State private var showingSkillSocketSheet = false
+    @State private var gearPickerBuild: Build = Build(name: "", characterLevel: 1)
+    @State private var showingGearPickerSheet = false
 
     var stats: CharacterStats {
         gameData.calculateStats(for: build)
@@ -40,7 +49,8 @@ struct BuildDetailView: View {
 
                     // Passive Tree button
                     Button {
-                        showingPassiveTree = true
+                        passiveTreeBuild = build
+                        showingPassiveTreeSheet = true
                     } label: {
                         HStack {
                             Image(systemName: "circle.hexagongrid")
@@ -78,6 +88,64 @@ struct BuildDetailView: View {
                         .cornerRadius(16)
                     }
 
+                    // Flesk button
+                    Button {
+                        showingFlasks = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "flask")
+                                .foregroundColor(Color(hex: "e07020"))
+                            Text("Flasks")
+                                .foregroundColor(.white)
+                            Spacer()
+                            Text("\(build.activeFlaskSet.flasks.count)/5")
+                                .foregroundColor(.gray)
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .background(Color(hex: "1a1a24"))
+                        .cornerRadius(16)
+                    }
+
+                    // Leveling Guide button
+                    Button {
+                        showingLevelingGuide = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "map")
+                                .foregroundColor(Color(hex: "e07020"))
+                            Text("Leveling Guide")
+                                .foregroundColor(.white)
+                            Spacer()
+                            Text("Lv \(build.characterLevel)")
+                                .foregroundColor(.gray)
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .background(Color(hex: "1a1a24"))
+                        .cornerRadius(16)
+                    }
+
+                    // Export button
+                    Button {
+                        showingExport = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "square.and.arrow.up")
+                                .foregroundColor(Color(hex: "e07020"))
+                            Text("Export Build")
+                                .foregroundColor(.white)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .background(Color(hex: "1a1a24"))
+                        .cornerRadius(16)
+                    }
+
                     // Stats breakdown
                     StatsBreakdownView(stats: stats)
 
@@ -90,14 +158,16 @@ struct BuildDetailView: View {
                     SkillsListView(
                         skillIds: build.skillIds,
                         onSocketTap: {
-                            showingSkillSocket = true
+                            skillSocketBuild = build
+                            showingSkillSocketSheet = true
                         }
                     )
 
                     // Equipment slot details
                     EquipmentSlotDetailsView(build: build, onSlotTap: { slot in
                         selectedSlot = slot
-                        showingGearPicker = true
+                        gearPickerBuild = build
+                        showingGearPickerSheet = true
                     })
                 }
                 .padding()
@@ -116,19 +186,45 @@ struct BuildDetailView: View {
             .sheet(isPresented: $showingEditor) {
                 BuildEditorView(build: build)
             }
-            .sheet(isPresented: $showingGearPicker) {
+            .sheet(isPresented: $showingGearPickerSheet) {
                 if let slot = selectedSlot {
-                    SlotGearPickerView(slot: slot, currentBuild: build)
+                    SlotGearPickerView(slot: slot, build: $gearPickerBuild)
+                        .onDisappear {
+                            var updatedBuild = build
+                            updatedBuild.gearSets = gearPickerBuild.gearSets
+                            gameData.saveBuild(updatedBuild)
+                        }
                 }
             }
-            .sheet(isPresented: $showingPassiveTree) {
-                PassiveTreeView(build: .constant(build))
+            .sheet(isPresented: $showingPassiveTreeSheet) {
+                PassiveTreeView(build: $passiveTreeBuild)
+                    .onDisappear {
+                        // Sync changes back to the original build
+                        var updatedBuild = build
+                        updatedBuild.passiveTree = passiveTreeBuild.passiveTree
+                        gameData.saveBuild(updatedBuild)
+                    }
             }
-            .sheet(isPresented: $showingSkillSocket) {
-                SkillSocketView(build: .constant(build))
+            .sheet(isPresented: $showingSkillSocketSheet) {
+                SkillSocketView(build: $skillSocketBuild)
+                    .onDisappear {
+                        var updatedBuild = build
+                        updatedBuild.skillIds = skillSocketBuild.skillIds
+                        updatedBuild.skillSockets = skillSocketBuild.skillSockets
+                        gameData.saveBuild(updatedBuild)
+                    }
             }
             .sheet(isPresented: $showingDPS) {
                 DPSView(build: build)
+            }
+            .sheet(isPresented: $showingFlasks) {
+                FlaskView(build: .constant(build))
+            }
+            .sheet(isPresented: $showingLevelingGuide) {
+                LevelingGuideView(build: build)
+            }
+            .sheet(isPresented: $showingExport) {
+                ExportBuildView(build: build)
             }
         }
     }

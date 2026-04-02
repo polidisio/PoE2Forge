@@ -16,6 +16,8 @@ struct BuildEditorView: View {
     @State private var showingSkillPicker = false
     @State private var showingGearPicker = false
     @State private var selectedSlot: EquipmentSlot?
+    @State private var showingTemplatePicker = false
+    @State private var passiveTree: PassiveTree = PassiveTree()
 
     init(build: Build?) {
         self.build = build
@@ -27,12 +29,34 @@ struct BuildEditorView: View {
             _notes = State(initialValue: build.notes)
             _isFavorite = State(initialValue: build.isFavorite)
             _characterLevel = State(initialValue: build.characterLevel)
+            _passiveTree = State(initialValue: build.passiveTree)
         }
     }
 
     var body: some View {
         NavigationStack {
             Form {
+                // Template section (only for new builds)
+                if build == nil {
+                    Section {
+                        Button {
+                            showingTemplatePicker = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "doc.on.doc")
+                                    .foregroundColor(Color(hex: "e07020"))
+                                Text("Start from Template")
+                                    .foregroundColor(Color(hex: "e07020"))
+                                Spacer()
+                                Text("\(BuildTemplate.defaultTemplates.count) available")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                    }
+                    .listRowBackground(Color(hex: "1a1a24"))
+                }
+
                 Section {
                     TextField("Build Name", text: $name)
                         .foregroundColor(.white)
@@ -156,6 +180,12 @@ struct BuildEditorView: View {
             .sheet(isPresented: $showingGearPicker) {
                 GearPickerView(equippedItems: $equippedItems)
             }
+            .sheet(isPresented: $showingTemplatePicker) {
+                TemplatePickerView { template in
+                    applyTemplate(template)
+                    showingTemplatePicker = false
+                }
+            }
         }
     }
 
@@ -164,14 +194,24 @@ struct BuildEditorView: View {
             id: build?.id ?? UUID(),
             name: name,
             forClass: selectedClassId,
-            equippedItems: equippedItems,
+            gearSets: [GearSet(equippedItems: equippedItems)],
             skillIds: selectedSkillIds,
+            passiveTree: passiveTree,
+            skillSockets: Dictionary(uniqueKeysWithValues: selectedSkillIds.map { ($0, SkillSocket()) }),
             notes: notes,
             createdAt: build?.createdAt ?? Date(),
             isFavorite: isFavorite,
             characterLevel: characterLevel
         )
         gameData.saveBuild(newBuild)
+    }
+
+    func applyTemplate(_ template: BuildTemplate) {
+        name = template.name
+        selectedClassId = template.characterClass
+        selectedSkillIds = template.skillIds
+        passiveTree = PassiveTree(allocatedNodes: Set(template.passiveTreeNodes))
+        characterLevel = template.recommendedLevel
     }
 }
 

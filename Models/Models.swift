@@ -62,6 +62,7 @@ enum WeaponType: String, Codable, CaseIterable {
     case twoHandMace = "twoHandMace"
     case bow = "bow"
     case staff = "staff"
+    case warstaff = "warstaff"
     case shield = "shield"
     case quiver = "quiver"
     
@@ -147,27 +148,37 @@ struct Armor: Codable, Identifiable {
 }
 
 // MARK: - Build
-struct Build: Codable, Identifiable {
+struct Build: Codable, Identifiable, Hashable {
     let id: UUID
     var name: String
     var forClass: String?
-    var equippedItems: [EquippedItem]
+    var gearSets: [GearSet]
     var skillIds: [String]
     var passiveTree: PassiveTree
     var skillSockets: [String: SkillSocket]  // skillId -> socket with supports
+    var flaskSets: [FlaskSet]
     var notes: String
     var createdAt: Date
     var isFavorite: Bool
     var characterLevel: Int
 
+    static func == (lhs: Build, rhs: Build) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+
     init(
         id: UUID = UUID(),
         name: String = "",
         forClass: String? = nil,
-        equippedItems: [EquippedItem] = [],
+        gearSets: [GearSet] = [],
         skillIds: [String] = [],
         passiveTree: PassiveTree = PassiveTree(),
         skillSockets: [String: SkillSocket] = [:],
+        flaskSets: [FlaskSet] = [],
         notes: String = "",
         createdAt: Date = Date(),
         isFavorite: Bool = false,
@@ -176,29 +187,46 @@ struct Build: Codable, Identifiable {
         self.id = id
         self.name = name
         self.forClass = forClass
-        self.equippedItems = equippedItems
+        self.gearSets = gearSets
         self.skillIds = skillIds
         self.passiveTree = passiveTree
         self.skillSockets = skillSockets
+        self.flaskSets = flaskSets
         self.notes = notes
         self.createdAt = createdAt
         self.isFavorite = isFavorite
         self.characterLevel = characterLevel
     }
 
+    // MARK: - Gear Set Helpers
+    // Active gear set (first one, or create default)
+    var activeGearSet: GearSet {
+        gearSets.first ?? GearSet()
+    }
+
+    // Computed property for backward compatibility
+    var equippedItems: [EquippedItem] {
+        activeGearSet.equippedItems
+    }
+
+    // Get the first (default) flask set, or create an empty one
+    var activeFlaskSet: FlaskSet {
+        flaskSets.first ?? FlaskSet()
+    }
+
     // Helper to get equipped item in a specific slot
     func item(in slot: EquipmentSlot) -> EquippedItem? {
-        equippedItems.first { $0.slot == slot }
+        activeGearSet.item(in: slot)
     }
 
     // Helper to get all equipped weapons
     var weapons: [EquippedItem] {
-        equippedItems.filter { $0.isWeapon }
+        activeGearSet.equippedItems.filter { $0.isWeapon }
     }
 
     // Helper to get all equipped armor
     var armors: [EquippedItem] {
-        equippedItems.filter { !$0.isWeapon }
+        activeGearSet.equippedItems.filter { !$0.isWeapon }
     }
 
     // Helper to get socket for a skill
@@ -210,25 +238,30 @@ struct Build: Codable, Identifiable {
     mutating func updateSocket(for skillId: String, with socket: SkillSocket) {
         skillSockets[skillId] = socket
     }
-}
 
-// MARK: - Run
-struct Run: Codable, Identifiable {
-    let id: UUID
-    var buildName: String
-    var act: Int
-    var completed: Bool
-    var deaths: Int
-    var notes: String
-    var date: Date
-    
-    init(id: UUID = UUID(), buildName: String = "", act: Int = 1, completed: Bool = false, deaths: Int = 0, notes: String = "", date: Date = Date()) {
-        self.id = id
-        self.buildName = buildName
-        self.act = act
-        self.completed = completed
-        self.deaths = deaths
-        self.notes = notes
-        self.date = date
+    // MARK: - Gear Set Management
+    // Add or update item in active gear set
+    mutating func updateItem(_ item: EquippedItem) {
+        if gearSets.isEmpty {
+            gearSets = [GearSet(equippedItems: [item])]
+        } else {
+            var activeSet = gearSets[0]
+            activeSet.equippedItems.removeAll { $0.slot == item.slot }
+            activeSet.equippedItems.append(item)
+            gearSets[0] = activeSet
+        }
+    }
+
+    // Remove item from active gear set
+    mutating func removeItem(in slot: EquipmentSlot) {
+        guard !gearSets.isEmpty else { return }
+        var activeSet = gearSets[0]
+        activeSet.equippedItems.removeAll { $0.slot == slot }
+        gearSets[0] = activeSet
+    }
+
+    // Add a new gear set
+    mutating func addGearSet(_ set: GearSet) {
+        gearSets.append(set)
     }
 }

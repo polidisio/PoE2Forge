@@ -59,7 +59,7 @@ enum EquipmentSlot: String, Codable, CaseIterable, Identifiable {
 }
 
 // MARK: - Equipped Item
-struct EquippedItem: Codable, Identifiable, Equatable {
+struct EquippedItem: Codable, Identifiable, Equatable, Hashable {
     let id: UUID
     let itemId: String
     let slot: EquipmentSlot
@@ -74,6 +74,11 @@ struct EquippedItem: Codable, Identifiable, Equatable {
 
     static func == (lhs: EquippedItem, rhs: EquippedItem) -> Bool {
         lhs.itemId == rhs.itemId && lhs.slot == rhs.slot
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(itemId)
+        hasher.combine(slot)
     }
 }
 

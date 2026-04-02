@@ -6,7 +6,8 @@ struct GearView: View {
     @State private var searchText = ""
     @State private var selectedWeaponType: WeaponType? = nil
     @State private var selectedArmorType: ArmorType? = nil
-    
+    @State private var showingUniques = false
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -17,7 +18,7 @@ struct GearView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding()
-                
+
                 if selectedTab == 0 {
                     weaponsView
                 } else {
@@ -26,7 +27,25 @@ struct GearView: View {
             }
             .background(Color(hex: "0a0a0f"))
             .navigationTitle("Gear")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingUniques = true
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "star.fill")
+                            Text("Uniques")
+                        }
+                        .font(.caption)
+                        .foregroundColor(Color(hex: "e07020"))
+                    }
+                }
+            }
             .searchable(text: $searchText, prompt: "Search gear...")
+            .sheet(isPresented: $showingUniques) {
+                UniquesDatabaseView()
+            }
         }
     }
     

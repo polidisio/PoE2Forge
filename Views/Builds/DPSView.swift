@@ -62,6 +62,9 @@ struct DPSView: View {
                 }
             }
 
+            // Damage Type Breakdown
+            DamageTypeBreakdownView(calculations: dpsSummary.skillCalculations)
+
             // Individual skill breakdowns
             if !dpsSummary.skillCalculations.isEmpty {
                 Divider().background(Color.gray.opacity(0.3))
@@ -187,5 +190,109 @@ struct SkillDPSRow: View {
         case .holy: return .white
         case .none: return .gray
         }
+    }
+}
+
+// MARK: - Damage Type Breakdown
+struct DamageTypeBreakdownView: View {
+    let calculations: [DPSCalculation]
+
+    var damageByType: [DamageType: Double] {
+        var result: [DamageType: Double] = [:]
+        for calc in calculations {
+            if let type = calc.damageType {
+                let dps = calc.isAttack ? calc.effectiveDPS : calc.effectiveCastDPS
+                result[type, default: 0] += dps
+            } else {
+                // Default to physical for unknown
+                let dps = calc.isAttack ? calc.effectiveDPS : calc.effectiveCastDPS
+                result[.physical, default: 0] += dps
+            }
+        }
+        return result
+    }
+
+    var totalDamage: Double {
+        damageByType.values.reduce(0, +)
+    }
+
+    var body: some View {
+        if !damageByType.isEmpty {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("DAMAGE TYPE BREAKDOWN")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+
+                // Horizontal bar
+                GeometryReader { geo in
+                    HStack(spacing: 2) {
+                        ForEach(Array(damageByType.keys.sorted { $0.rawValue < $1.rawValue }), id: \.self) { type in
+                            let value = damageByType[type] ?? 0
+                            let width = totalDamage > 0 ? (value / totalDamage) * geo.size.width : 0
+                            Rectangle()
+                                .fill(damageTypeColor(type))
+                                .frame(width: max(width, 4))
+                        }
+                    }
+                }
+                .frame(height: 16)
+                .cornerRadius(4)
+
+                // Legend
+                VStack(spacing: 6) {
+                    ForEach(Array(damageByType.keys.sorted { $0.rawValue < $1.rawValue }), id: \.self) { type in
+                        let value = damageByType[type] ?? 0
+                        let percent = totalDamage > 0 ? (value / totalDamage) * 100 : 0
+                        HStack {
+                            Circle()
+                                .fill(damageTypeColor(type))
+                                .frame(width: 10, height: 10)
+                            Text(damageTypeName(type))
+                                .font(.caption)
+                                .foregroundColor(.white)
+                            Spacer()
+                            Text("\(Int(percent))%")
+                                .font(.caption)
+                                .foregroundColor(Color(hex: "e07020"))
+                            Text("(\(formatNumber(value)))")
+                                .font(.caption2)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                }
+            }
+            .padding()
+            .background(Color(hex: "1a1a24"))
+            .cornerRadius(12)
+        }
+    }
+
+    func damageTypeName(_ type: DamageType) -> String {
+        switch type {
+        case .fire: return "Fire"
+        case .cold: return "Cold"
+        case .lightning: return "Lightning"
+        case .physical: return "Physical"
+        case .chaos: return "Chaos"
+        case .holy: return "Holy"
+        }
+    }
+
+    func damageTypeColor(_ type: DamageType) -> Color {
+        switch type {
+        case .fire: return .orange
+        case .cold: return .cyan
+        case .lightning: return .yellow
+        case .physical: return Color(hex: "8B4513")
+        case .chaos: return .purple
+        case .holy: return .white
+        }
+    }
+
+    func formatNumber(_ value: Double) -> String {
+        if value >= 1000 {
+            return String(format: "%.1fK", value / 1000)
+        }
+        return String(format: "%.0f", value)
     }
 }

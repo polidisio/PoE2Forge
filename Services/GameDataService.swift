@@ -9,19 +9,20 @@ class GameDataService: ObservableObject {
     @Published var weapons: [Weapon] = []
     @Published var armors: [Armor] = []
     @Published var passiveSkills: [PassiveSkillNode] = []
-    
+    @Published var flaskData: [FlaskData] = []
+
     @AppStorage("builds") private var buildsData: Data = Data()
     @AppStorage("runs") private var runsData: Data = Data()
-    
+
     @Published var builds: [Build] = []
     @Published var runs: [Run] = []
-    
+
     init() {
         loadData()
         loadBuilds()
         loadRuns()
     }
-    
+
     func loadData() {
         // NOTE: JSON files contain swapped data - fix by loading correct files
         // classes.json contains SkillGem data -> load into skillGems
@@ -35,6 +36,7 @@ class GameDataService: ObservableObject {
         weapons = loadJSON("supportGems") ?? []
         armors = loadJSON("armor") ?? []
         passiveSkills = loadJSON("passiveSkills") ?? []
+        flaskData = FlaskData.sampleFlasks
     }
     
     private func loadJSON<T: Decodable>(_ name: String) -> T? {
@@ -128,6 +130,10 @@ class GameDataService: ObservableObject {
         passiveSkills.first { $0.id == id }
     }
 
+    func flaskDataBy(id: String) -> FlaskData? {
+        flaskData.first { $0.id == id }
+    }
+
     // MARK: - Passive Tree Helpers
     func passiveNodeIsAllocated(_ nodeId: String, in build: Build) -> Bool {
         build.passiveTree.isAllocated(nodeId)
@@ -190,12 +196,29 @@ class GameDataService: ObservableObject {
     
     var completionRate: Double {
         guard !runs.isEmpty else { return 0 }
-        let completed = runs.filter { $0.completed }.count
-        return Double(completed) / Double(runs.count) * 100
+        let completedRuns = runs.filter { $0.isCompleted }.count
+        return Double(completedRuns) / Double(runs.count) * 100
     }
-    
+
     var totalDeaths: Int {
-        runs.reduce(0) { $0 + $1.deaths }
+        runs.reduce(0) { $0 + $1.totalDeaths }
+    }
+
+    // MARK: - Run Helpers
+    func buildBy(id: UUID) -> Build? {
+        builds.first { $0.id == id }
+    }
+
+    func runsFor(buildId: UUID) -> [Run] {
+        runs.filter { $0.buildId == buildId }
+    }
+
+    func activeRuns() -> [Run] {
+        runs.filter { !$0.isCompleted }
+    }
+
+    func completedRuns() -> [Run] {
+        runs.filter { $0.isCompleted }
     }
 
     // MARK: - Equipment Helpers
@@ -321,6 +344,67 @@ class GameDataService: ObservableObject {
         return (diff, issues)
     }
 
+    // MARK: - Item Comparison
+    func compareItems(oldItemId: String?, newItemId: String, isWeapon: Bool) -> ItemComparison {
+        let newStats: ItemStats
+        let newItemName: String
+
+        if isWeapon {
+            guard let weapon = weaponBy(id: newItemId) else {
+                return ItemComparison(itemName: "Unknown", isWeapon: true, oldStats: nil, newStats: ItemStats(), statDiffs: [])
+            }
+            newStats = ItemStats.from(weapon: weapon)
+            newItemName = weapon.name
+        } else {
+            guard let armor = armorBy(id: newItemId) else {
+                return ItemComparison(itemName: "Unknown", isWeapon: false, oldStats: nil, newStats: ItemStats(), statDiffs: [])
+            }
+            newStats = ItemStats.from(armor: armor)
+            newItemName = armor.name
+        }
+
+        let oldStats: ItemStats?
+        if let oldId = oldItemId {
+            if isWeapon {
+                oldStats = weaponBy(id: oldId).map { ItemStats.from(weapon: $0) }
+            } else {
+                oldStats = armorBy(id: oldId).map { ItemStats.from(armor: $0) }
+            }
+        } else {
+            oldStats = nil
+        }
+
+        // Calculate stat differences
+        var statDiffs: [StatDiff] = []
+
+        if isWeapon {
+            if let old = oldStats {
+                statDiffs.append(StatDiff(statName: "Damage", oldValue: old.damageMin, newValue: newStats.damageMin))
+                statDiffs.append(StatDiff(statName: "Max Damage", oldValue: old.damageMax, newValue: newStats.damageMax))
+                statDiffs.append(StatDiff(statName: "APS", oldValue: Int(old.aps * 100), newValue: Int(newStats.aps * 100)))
+            }
+        } else {
+            if let old = oldStats {
+                statDiffs.append(StatDiff(statName: "Defense", oldValue: old.defense, newValue: newStats.defense))
+            }
+        }
+
+        if let old = oldStats {
+            statDiffs.append(StatDiff(statName: "Level Req", oldValue: old.level, newValue: newStats.level))
+            statDiffs.append(StatDiff(statName: "Strength", oldValue: old.strength, newValue: newStats.strength))
+            statDiffs.append(StatDiff(statName: "Dexterity", oldValue: old.dexterity, newValue: newStats.dexterity))
+            statDiffs.append(StatDiff(statName: "Intelligence", oldValue: old.intelligence, newValue: newStats.intelligence))
+        }
+
+        return ItemComparison(
+            itemName: newItemName,
+            isWeapon: isWeapon,
+            oldStats: oldStats,
+            newStats: newStats,
+            statDiffs: statDiffs
+        )
+    }
+
     // MARK: - DPS Calculation
     func calculateBuildDPS(for build: Build) -> BuildDPSSummary {
         var summary = BuildDPSSummary()
@@ -367,6 +451,8 @@ class GameDataService: ObservableObject {
         var calc = DPSCalculation(
             skillId: skill.id,
             skillName: skill.name,
+            gemLevel: socket.level,
+            gemQuality: socket.quality,
             baseDamage: 0,
             effectiveDamage: 0,
             damageMultiplier: 1.0,
@@ -386,12 +472,20 @@ class GameDataService: ObservableObject {
             calc.baseDamage = parseDamageRange(damageStr)
         }
 
+        // Apply gem level scaling: +10% per level above 1
+        let levelScaling = 1.0 + (Double(socket.level - 1) * 0.10)
+        calc.baseDamage *= levelScaling
+
+        // Apply gem quality scaling: +2.5% per quality point
+        let qualityScaling = 1.0 + (Double(socket.quality) * 0.025)
+        calc.baseDamage *= qualityScaling
+
         // Apply support gem multipliers
-        calc.damageMultiplier = socket.damageMultiplier(gameData: self)
+        calc.damageMultiplier = socket.damageMultiplier(supportGems: supportGems)
 
         // For attack skills with weapon
         if skill.gemType == .attack, let weapon = weapon {
-            if let apsStr = weapon.aps, let aps = Double(apsStr) {
+            if let aps = Double(weapon.aps) {
                 calc.attacksPerSecond = aps
             }
             calc.hitDamage = calc.baseDamage * calc.damageMultiplier
@@ -418,6 +512,13 @@ class GameDataService: ObservableObject {
             calc.effectiveDamage = calc.baseDamage * calc.damageMultiplier
             calc.effectiveCastDPS = calc.effectiveDamage * calc.castSpeed
         }
+
+        // Apply crit from passives (base crit is 5%)
+        let critBonus = Double(passiveBonus.critMultiplier) / 100.0
+        calc.critMultiplier = 1.5 + critBonus
+
+        // Apply elemental penetration from passives (reduces enemy resist)
+        // This would affect effective damage but we just show it in breakdown
 
         return calc
     }
